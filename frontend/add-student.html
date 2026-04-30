@@ -1,1 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Student — FaceAttend</title>
+  <link rel="stylesheet" href="/static/css/styles.css"/>
+  <style>
+    .steps-bar { display:flex;align-items:center;gap:0;margin-bottom:32px; }
+    .step { display:flex;align-items:center;gap:10px;flex:1; }
+    .step-num { width:36px;height:36px;border-radius:50%;border:2px solid var(--border);
+      display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;
+      color:var(--text-3);flex-shrink:0;transition:all 0.3s; }
+    .step.active .step-num { border-color:var(--primary);background:var(--primary);color:white; }
+    .step.done .step-num { border-color:var(--success);background:var(--success);color:white; }
+    .step-label { font-size:13px;font-weight:600;color:var(--text-3); }
+    .step.active .step-label { color:var(--text); }
+    .step.done .step-label { color:var(--success-light); }
+    .step-line { flex:1;height:2px;background:var(--border);margin:0 12px;max-width:60px;transition:background 0.3s; }
+    .step.done + .step-line, .step.done + .step { /* */ }
+    .step-page { display:none; }
+    .step-page.active { display:block; }
+    .photo-upload {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s;
+    }
+    .photo-upload:hover { border-color: var(--primary); background: rgba(37,99,235,0.04); }
+    .photo-upload .upload-icon { font-size: 48px; margin-bottom: 12px; }
+    .photo-upload p { color: var(--text-2); font-size: 14px; }
+    .photo-preview { display:none;text-align:center; }
+    .preview-img { width:120px;height:120px;border-radius:20px;object-fit:cover;margin:0 auto 12px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item active" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Add New Student</h1><p>Enroll a student and register their face data</p></div>
+      <div class="topbar-actions">
+        <a href="students.html" class="btn btn-ghost">← Back to Students</a>
+      </div>
+    </div>
+    <div class="page-body">
+      <!-- Steps -->
+      <div class="steps-bar">
+        <div class="step active" id="s1"><div class="step-num">1</div><div class="step-label">Personal Info</div></div>
+        <div class="step-line" id="l1"></div>
+        <div class="step" id="s2"><div class="step-num">2</div><div class="step-label">Academic Details</div></div>
+        <div class="step-line" id="l2"></div>
+        <div class="step" id="s3"><div class="step-num">3</div><div class="step-label">Face Registration</div></div>
+        <div class="step-line" id="l3"></div>
+        <div class="step" id="s4"><div class="step-num">✓</div><div class="step-label">Confirm & Save</div></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step-page active" id="page1">
+        <div class="card">
+          <div class="card-header"><h3>👤 Personal Information</h3></div>
+          <div class="card-body">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Student ID *</label>
+                <input class="form-input" id="sid" placeholder="e.g. STU011"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input class="form-input" id="sname" placeholder="Full legal name"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date of Birth</label>
+                <input class="form-input" type="date" id="dob"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-input" id="gender">
+                  <option value="">Select gender</option>
+                  <option>Male</option><option>Female</option><option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input class="form-input" type="email" id="email" placeholder="student@university.edu"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input class="form-input" type="tel" id="phone" placeholder="+94 77 123 4567"/>
+              </div>
+            </div>
+            <div class="form-group mt-16">
+              <label class="form-label">Profile Photo</label>
+              <div class="photo-upload" id="photoZone" onclick="document.getElementById('photoFile').click()">
+                <div class="upload-icon">📸</div>
+                <p>Click to upload profile photo</p>
+                <p style="font-size:12px;color:var(--text-3);margin-top:4px">JPG, PNG up to 5MB</p>
+                <input type="file" id="photoFile" accept="image/*" style="display:none" onchange="previewPhoto(this)"/>
+              </div>
+              <div class="photo-preview" id="photoPreview">
+                <div class="avatar-xl" id="previewAvatar" style="margin:0 auto;"></div>
+                <button onclick="clearPhoto()" class="btn btn-ghost btn-sm mt-16">🗑️ Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-center gap-12 mt-24" style="justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="nextStep(2)">Next: Academic Details →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-page" id="page2">
+        <div class="card">
+          <div class="card-header"><h3>🎓 Academic Details</h3></div>
+          <div class="card-body">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Department *</label>
+                <select class="form-input">
+                  <option value="">Select department</option>
+                  <option>Computer Science</option><option>Engineering</option><option>Business</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Year / Level</label>
+                <select class="form-input">
+                  <option>Year 1</option><option>Year 2</option><option>Year 3</option><option>Year 4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Class / Group</label>
+                <input class="form-input" placeholder="e.g. CS-301"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Enrollment Date</label>
+                <input class="form-input" type="date"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Assigned Teacher</label>
+                <select class="form-input">
+                  <option>Dr. Nimal Perera</option><option>Dr. Sujatha Fernando</option><option>Prof. Aruna Silva</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Status</label>
+                <select class="form-input">
+                  <option>Active</option><option>Inactive</option><option>Suspended</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-center gap-12 mt-24" style="justify-content:flex-end;">
+          <button class="btn btn-ghost" onclick="nextStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(3)">Next: Face Registration →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-page" id="page3">
+        <div class="card">
+          <div class="card-header"><h3>📷 Face Registration</h3><span class="badge badge-warning">Required for attendance</span></div>
+          <div class="card-body" style="text-align:center;">
+            <p style="color:var(--text-2);margin-bottom:24px">Register the student's face for automatic attendance recognition</p>
+            <a href="face-capture.html" class="btn btn-primary" style="font-size:16px;padding:16px 32px;">
+              📷 Open Face Capture →
+            </a>
+            <p style="font-size:13px;color:var(--text-3);margin-top:16px">Or skip and register later</p>
+          </div>
+        </div>
+        <div class="flex-center gap-12 mt-24" style="justify-content:flex-end;">
+          <button class="btn btn-ghost" onclick="nextStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(4)">Next: Confirm →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-page" id="page4">
+        <div class="card">
+          <div class="card-header"><h3>✅ Confirm & Save</h3></div>
+          <div class="card-body">
+            <div style="text-align:center;padding:24px;">
+              <div style="font-size:64px;margin-bottom:16px">🎉</div>
+              <h2 style="margin-bottom:8px">Ready to Save!</h2>
+              <p style="color:var(--text-2)">Review the details and click Save to enroll the student.</p>
+              <div style="display:flex;gap:16px;justify-content:center;margin-top:28px;">
+                <button class="btn btn-ghost" onclick="nextStep(3)">← Edit</button>
+                <button class="btn btn-primary" onclick="saveStudent()" style="padding:12px 36px;">💾 Save Student</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let current = 1;
+    function nextStep(n) {
+      document.getElementById('page'+current).classList.remove('active');
+      document.getElementById('s'+current).classList.remove('active');
+      if (n > current) document.getElementById('s'+current).classList.add('done');
+      current = n;
+      document.getElementById('page'+current)?.classList.add('active');
+      document.getElementById('s'+current)?.classList.add('active');
+    }
+    function previewPhoto(input) {
+      if(input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('photoZone').style.display='none';
+          document.getElementById('photoPreview').style.display='block';
+          document.getElementById('previewAvatar').textContent='📸';
+          document.getElementById('previewAvatar').style.background='linear-gradient(135deg,var(--primary),#8B5CF6)';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function clearPhoto() {
+      document.getElementById('photoZone').style.display='block';
+      document.getElementById('photoPreview').style.display='none';
+      document.getElementById('photoFile').value='';
+    }
+    function saveStudent() { window.location.href='students.html'; }
+  </script>
+<script src="/static/js/api.js"></script>
+<script>requireAuth();</script>
+</body>
+</html>
 
