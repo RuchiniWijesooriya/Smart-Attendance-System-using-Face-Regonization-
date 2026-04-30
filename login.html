@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    body { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+    .login-left {
+      background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px; position: relative; overflow: hidden;
+    }
+    .login-left::before {
+      content: ''; position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(ellipse at center, rgba(37,99,235,0.12) 0%, transparent 60%);
+    }
+    .hero-icon {
+      width: 120px; height: 120px; border-radius: 30px;
+      background: linear-gradient(135deg, var(--primary), #8B5CF6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px; margin-bottom: 32px;
+      box-shadow: 0 20px 60px rgba(37,99,235,0.4);
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .hero-title { font-size: 34px; font-weight: 800; text-align: center; margin-bottom: 12px; }
+    .hero-sub { font-size: 15px; color: var(--text-2); text-align: center; max-width: 340px; line-height: 1.7; }
+    .feature-pills { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; }
+    .pill {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 12px 18px;
+    }
+    .pill-icon { font-size: 20px; }
+    .pill-text { font-size: 14px; color: rgba(255,255,255,0.85); }
+    .login-right {
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px; background: var(--bg-2);
+    }
+    .login-box { width: 100%; max-width: 400px; }
+    .login-header { margin-bottom: 36px; }
+    .login-header h2 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .login-header p { color: var(--text-2); font-size: 14px; }
+    .role-tabs { display: flex; gap: 8px; margin-bottom: 28px; }
+    .role-tab {
+      flex: 1; padding: 10px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-2); font-size: 14px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .role-tab.active { background: var(--primary-glow); border-color: var(--primary); color: var(--primary-light); }
+    .forgot { font-size: 13px; color: var(--primary-light); text-decoration: none; }
+    .forgot:hover { text-decoration: underline; }
+    .login-footer { margin-top: 28px; text-align: center; font-size: 13px; color: var(--text-2); }
+    .error-msg { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3);
+      border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: var(--danger-light); margin-bottom: 16px; display: none; }
+    .input-wrapper { position: relative; }
+    .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <div class="login-left">
+    <div class="hero-icon">👁️</div>
+    <div class="hero-title">FaceAttend</div>
+    <div class="hero-sub">AI-powered attendance management with real-time face recognition technology.</div>
+    <div class="feature-pills">
+      <div class="pill"><span class="pill-icon">🎯</span><span class="pill-text">95%+ recognition accuracy</span></div>
+      <div class="pill"><span class="pill-icon">⚡</span><span class="pill-text">Real-time face detection</span></div>
+      <div class="pill"><span class="pill-icon">🔒</span><span class="pill-text">Secure & encrypted data</span></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-box">
+      <div class="login-header">
+        <h2>Welcome back 👋</h2>
+        <p>Sign in to your account to continue</p>
+      </div>
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="setRole(this,'Admin')">🛡️ Admin</button>
+        <button class="role-tab" onclick="setRole(this,'Teacher')">👨‍🏫 Teacher</button>
+        <button class="role-tab" onclick="setRole(this,'Viewer')">👁️ Viewer</button>
+      </div>
+      <div class="error-msg" id="errorMsg">⚠️ Invalid credentials. Please try again.</div>
+      <div class="form-group">
+        <label class="form-label">Username / Email</label>
+        <input class="form-input" id="username" type="text" placeholder="admin@faceattend.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;justify-content:space-between;">
+          Password <a href="#" class="forgot">Forgot password?</a>
+        </label>
+        <div class="input-wrapper">
+          <input class="form-input" id="password" type="password" placeholder="••••••••"/>
+          <button class="eye-btn" onclick="togglePw()">👁️</button>
+        </div>
+      </div>
+      <div class="flex-center gap-8 mb-20">
+        <input type="checkbox" id="remember" style="accent-color:var(--primary);width:16px;height:16px;cursor:pointer"/>
+        <label for="remember" style="font-size:13px;color:var(--text-2);cursor:pointer">Remember me for 30 days</label>
+      </div>
+      <button class="btn btn-primary w-full" onclick="doLogin()" style="justify-content:center;padding:14px;">
+        🚀 Sign In
+      </button>
+      <div class="login-footer">
+        Demo credentials: <strong>admin / admin123</strong>
+      </div>
+    </div>
+  </div>
+  <script>
+    function setRole(el, role) {
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function togglePw() {
+      const pw = document.getElementById('password');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    }
+    function doLogin() {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if ((u === 'admin' || u === 'admin@faceattend.com') && p === 'admin123') {
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+    document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  </script>
+</body>
+</html>
