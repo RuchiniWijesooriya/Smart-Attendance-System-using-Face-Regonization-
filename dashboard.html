@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .activity-item { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--border); }
+    .activity-item:last-child { border-bottom:none; }
+    .activity-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .activity-info h4 { font-size:14px; font-weight:500; }
+    .activity-info p { font-size:12px; color:var(--text-2); margin-top:2px; }
+    .activity-time { font-size:11px; color:var(--text-3); margin-left:auto; }
+    .quick-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
+    .quick-btn {
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      padding:20px; text-align:center; cursor:pointer; transition:all 0.2s; text-decoration:none;
+    }
+    .quick-btn:hover { border-color:var(--primary); box-shadow:var(--shadow-glow); transform:translateY(-2px); }
+    .quick-btn .qb-icon { font-size:28px; margin-bottom:10px; }
+    .quick-btn .qb-label { font-size:13px; font-weight:600; color:var(--text); }
+    .chart-bar-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .chart-bar-label { width:80px; font-size:12px; color:var(--text-2); text-align:right; }
+    .chart-bar-track { flex:1; height:8px; background:rgba(0,0,0,0.07); border-radius:4px; overflow:hidden; }
+    .chart-bar-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+    .chart-bar-val { width:36px; font-size:12px; color:var(--text-2); }
+    .today-box { text-align:center; padding:12px; background:rgba(37,99,235,0.05); border-radius:10px; }
+    .today-box .val { font-size:24px; font-weight:800; }
+    .today-box .lbl { font-size:11px; color:var(--text-2); margin-top:2px; }
+  </style>
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">👁️</div>
+      <h2>FaceAttend</h2>
+      <p>Smart Attendance System</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item active" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">A</div>
+        <div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div>
+        <span style="margin-left:auto;color:var(--text-3)">⋮</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">
+        <h1>Dashboard</h1>
+        <p>Monday, 27 April 2026 — Welcome back, Admin 👋</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="live-attendance.html" class="btn btn-primary">🎥 Start Attendance</a>
+        <a href="notifications.html" class="btn btn-ghost btn-icon notif-dot" style="font-size:18px">🔔</a>
+        <div class="avatar">A</div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-bg" style="background:var(--primary)"></div>
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" style="color:var(--primary-light)">248</div>
+          <div class="stat-label">Total Students</div>
+          <div class="stat-change up">↑ 12 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-bg" style="background:var(--success)"></div>
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" style="color:var(--success-light)">192</div>
+          <div class="stat-label">Present Today</div>
+          <div class="stat-change up">↑ 77.4% rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-bg" style="background:var(--danger)"></div>
+          <div class="stat-icon">❌</div>
+          <div class="stat-value" style="color:var(--danger-light)">56</div>
+          <div class="stat-label">Absent Today</div>
+          <div class="stat-change down">↓ 22.6% rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-bg" style="background:var(--warning)"></div>
+          <div class="stat-icon">⏰</div>
+          <div class="stat-value" style="color:var(--warning-light)">14</div>
+          <div class="stat-label">Late Arrivals</div>
+          <div class="stat-change down">↓ 5.6% rate</div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <a href="live-attendance.html" class="quick-btn"><div class="qb-icon">🎥</div><div class="qb-label">Start Live Attendance</div></a>
+        <a href="add-student.html" class="quick-btn"><div class="qb-icon">👤</div><div class="qb-label">Enroll New Student</div></a>
+        <a href="reports.html" class="quick-btn"><div class="qb-icon">📊</div><div class="qb-label">View Reports</div></a>
+        <a href="records.html" class="quick-btn"><div class="qb-icon">📋</div><div class="qb-label">Attendance Records</div></a>
+        <a href="export.html" class="quick-btn"><div class="qb-icon">📤</div><div class="qb-label">Export Data</div></a>
+        <a href="students.html" class="quick-btn"><div class="qb-icon">👥</div><div class="qb-label">Manage Students</div></a>
+      </div>
+
+      <!-- BOTTOM GRID -->
+      <div class="grid-2">
+        <!-- Weekly Trend -->
+        <div class="card">
+          <div class="card-header"><h3>📈 Weekly Attendance Trend</h3><span class="badge badge-primary">This Week</span></div>
+          <div class="card-body">
+            <div class="flex-center gap-16 mb-20" style="justify-content:center;">
+              <div class="today-box"><div class="val" style="color:var(--success-light)">77%</div><div class="lbl">Avg Present</div></div>
+              <div class="today-box"><div class="val" style="color:var(--danger-light)">23%</div><div class="lbl">Avg Absent</div></div>
+              <div class="today-box"><div class="val" style="color:var(--warning-light)">6%</div><div class="lbl">Avg Late</div></div>
+            </div>
+            <div id="chart"></div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header"><h3>🕐 Recent Activity</h3><a href="records.html" class="btn btn-ghost btn-sm">View All</a></div>
+          <div class="card-body">
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--success)"></div>
+              <div class="avatar" style="width:32px;height:32px;font-size:12px">K</div>
+              <div class="activity-info"><h4>Kavindu Perera</h4><p>Marked Present — CS301</p></div>
+              <div class="activity-time">08:42 AM</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--success)"></div>
+              <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#8B5CF6,#EC4899)">S</div>
+              <div class="activity-info"><h4>Sameera Silva</h4><p>Marked Present — CS301</p></div>
+              <div class="activity-time">08:44 AM</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--warning)"></div>
+              <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#D97706,#F59E0B)">R</div>
+              <div class="activity-info"><h4>Ruchini Fernando</h4><p>Late — CS301 (08:52 AM)</p></div>
+              <div class="activity-time">08:52 AM</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--danger)"></div>
+              <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#DC2626,#F87171)">T</div>
+              <div class="activity-info"><h4>Tharushi Mendis</h4><p>Absent — CS301</p></div>
+              <div class="activity-time">—</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--success)"></div>
+              <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#16A34A,#22C55E)">D</div>
+              <div class="activity-info"><h4>Dinesh Rathnayake</h4><p>Marked Present — CS302</p></div>
+              <div class="activity-time">09:01 AM</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--success)"></div>
+              <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#0EA5E9,#38BDF8)">A</div>
+              <div class="activity-info"><h4>Ashini Jayawardena</h4><p>Marked Present — CS302</p></div>
+              <div class="activity-time">09:03 AM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const vals = [82,75,88,71,77,65,0];
+    const chart = document.getElementById('chart');
+    chart.innerHTML = days.map((d,i)=>`
+      <div class="chart-bar-row">
+        <div class="chart-bar-label">${d}</div>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill" style="width:${vals[i]}%;background:${vals[i]>80?'var(--success)':vals[i]>70?'var(--primary)':'var(--warning)'}"></div>
+        </div>
+        <div class="chart-bar-val">${vals[i]}%</div>
+      </div>`).join('');
+  </script>
+</body>
+</html>
