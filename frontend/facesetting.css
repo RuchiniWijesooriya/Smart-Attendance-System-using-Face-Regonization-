@@ -62,7 +62,7 @@ nav a {
     border-radius: 10px;
 }
 
-/* Icons Colors - Image එකේ විදියට */
+
 nav a i { margin-right: 15px; width: 20px; text-align: center; }
 nav a i.fa-chart-simple { color: #4caf50; } 
 nav a i.fa-video { color: #333; }
