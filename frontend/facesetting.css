@@ -10,7 +10,6 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     background-color: var(--bg-light);
-    color: var(--text-dark);
 }
 
 .container {
@@ -18,18 +17,20 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar Styling */
+/* Sidebar */
 .sidebar {
     width: 260px;
     background: var(--sidebar-white);
     padding: 20px;
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo-section {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 30px;
 }
 
@@ -37,7 +38,7 @@ body {
     background: #4a47e6;
     color: white;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .logo-section h2 { margin: 0; font-size: 18px; }
@@ -46,7 +47,7 @@ body {
 .nav-group {
     font-size: 10px;
     font-weight: bold;
-    color: #bbb;
+    color: #ccc;
     margin: 20px 0 10px 5px;
     letter-spacing: 1px;
 }
@@ -58,11 +59,22 @@ nav a {
     text-decoration: none;
     color: #555;
     font-size: 14px;
-    border-radius: 8px;
-    margin-bottom: 5px;
+    border-radius: 10px;
 }
 
+/* Icons Colors - Image එකේ විදියට */
 nav a i { margin-right: 15px; width: 20px; text-align: center; }
+nav a i.fa-chart-simple { color: #4caf50; } 
+nav a i.fa-video { color: #333; }
+nav a i.fa-users { color: #5c7cfa; }
+nav a i.fa-user-plus { color: #333; }
+nav a i.fa-camera { color: #444; }
+nav a i.fa-file-lines { color: #ff9800; }
+nav a i.fa-chart-line { color: #f44336; }
+nav a i.fa-file-export { color: #00bcd4; }
+nav a i.fa-bell { color: #fbc02d; }
+nav a i.fa-gear { color: #78909c; }
+nav a i.fa-user-shield { color: #d32f2f; }
 
 nav a.active {
     background: #eef4ff;
@@ -79,35 +91,26 @@ nav a.active {
 }
 
 .user-profile {
-    margin-top: 50px;
-    background: #f8faff;
-    padding: 15px;
+    margin-top: auto;
+    background: #f0f4ff;
+    padding: 12px;
     border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .avatar {
     background: #4a47e6;
     color: white;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 35px; height: 35px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
     font-weight: bold;
 }
 
-.user-info strong { font-size: 13px; display: block; }
-.user-info span { font-size: 11px; color: var(--text-muted); }
-
-/* Main Content Area */
-.main-content {
-    flex: 1;
-    padding: 40px;
-}
+/* Main Content */
+.main-content { flex: 1; padding: 40px; }
 
 header {
     display: flex;
@@ -116,118 +119,58 @@ header {
     margin-bottom: 30px;
 }
 
-.header-title h1 { margin: 0; font-size: 24px; }
-.header-title p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
-
 .btn-save {
     background: var(--primary-blue);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border-radius: 8px;
-    cursor: pointer;
     font-weight: 600;
+    cursor: pointer;
 }
 
-/* Settings Layout */
-.settings-layout {
-    display: flex;
-    gap: 30px;
-}
+.settings-layout { display: flex; gap: 30px; }
 
-.inner-tabs {
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+.inner-tabs { width: 220px; display: flex; flex-direction: column; gap: 10px; }
 
 .tab {
-    background: white;
-    border: none;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: left;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    color: #666;
-    font-weight: 500;
+    background: white; border: none; padding: 15px;
+    border-radius: 12px; text-align: left; cursor: pointer;
+    font-weight: 500; color: #666;
 }
 
-.tab.active {
-    background: #eef4ff;
-    color: var(--primary-blue);
-}
-
-.tab i { margin-right: 10px; }
+.tab.active { background: #eef4ff; color: var(--primary-blue); }
 
 .settings-card {
-    flex: 1;
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    flex: 1; background: white; padding: 30px;
+    border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
-.settings-card h3 { margin-top: 0; font-size: 18px; }
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 600;
-}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
 
 select {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #eee;
-    background: #f9f9f9;
+    width: 100%; padding: 12px; border-radius: 8px;
+    border: 1px solid #eee; background: #fcfcfc;
 }
 
-.toggle-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-top: 1px solid #f0f0f0;
+.toggle-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 0; border-top: 1px solid #f9f9f9;
 }
 
-.toggle-group p { margin: 5px 0 0; font-size: 12px; color: var(--text-muted); }
+.toggle-info p { margin: 4px 0 0; font-size: 12px; color: var(--text-muted); }
 
-/* Switch Toggle Styling */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 45px;
-  height: 24px;
-}
-
+/* Switch */
+.switch { position: relative; display: inline-block; width: 44px; height: 22px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s; border-radius: 34px;
 }
-
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 18px; width: 18px;
-  left: 3px; bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+    position: absolute; content: ""; height: 16px; width: 16px;
+    left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
 }
-
 input:checked + .slider { background-color: var(--primary-blue); }
-input:checked + .slider:before { transform: translateX(20px); }
+input:checked + .slider:before { transform: translateX(22px); }

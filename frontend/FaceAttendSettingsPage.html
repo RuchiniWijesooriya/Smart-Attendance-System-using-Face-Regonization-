@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FaceAttend Settings</title>
-    <!-- Font Awesome for Icons -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS File එක සම්බන්ධ කිරීම -->
     <link rel="stylesheet" href="facesetting.css">
 </head>
 <body>
@@ -62,16 +63,14 @@
             </header>
 
             <div class="settings-layout">
-                <!-- Inner Sidebar -->
                 <div class="inner-tabs">
                     <button class="tab active"><i class="fa-solid fa-video"></i> Camera & System</button>
                     <button class="tab"><i class="fa-solid fa-user"></i> Account</button>
                     <button class="tab"><i class="fa-solid fa-database"></i> Backup & Data</button>
                 </div>
 
-                <!-- Settings Box -->
                 <div class="settings-card">
-                    <h3><i class="fa-solid fa-video"></i> Camera & System Settings</h3>
+                    <h3><i class="fa-solid fa-video" style="color: #333;"></i> Camera & System Settings</h3>
                     <hr>
                     
                     <div class="form-group">
@@ -84,12 +83,12 @@
                     <div class="form-group">
                         <label>Resolution</label>
                         <select>
-                            <option>1920x1080 (Full HD)</option>
+                            <option>1920×1080 (Full HD)</option>
                         </select>
                     </div>
 
-                    <div class="toggle-group">
-                        <div>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
                             <strong>Auto-start Camera on Login</strong>
                             <p>Start camera when system loads</p>
                         </div>
@@ -99,8 +98,8 @@
                         </label>
                     </div>
 
-                    <div class="toggle-group">
-                        <div>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
                             <strong>Show Detection Overlay</strong>
                             <p>Display bounding boxes on feed</p>
                         </div>
@@ -110,8 +109,8 @@
                         </label>
                     </div>
 
-                    <div class="toggle-group">
-                        <div>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
                             <strong>Save Unknown Face Snapshots</strong>
                             <p>Store unrecognized face images</p>
                         </div>
