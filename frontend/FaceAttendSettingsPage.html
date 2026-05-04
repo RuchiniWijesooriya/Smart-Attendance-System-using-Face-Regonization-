@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceAttend Settings</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="facesetting.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon"><i class="fa-solid fa-eye"></i></div>
+                <div>
+                    <h2>FaceAttend</h2>
+                    <p>Smart Attendance System</p>
+                </div>
+            </div>
+
+            <nav>
+                <div class="nav-group">MAIN</div>
+                <a href="#"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
+                <a href="#"><i class="fa-solid fa-video"></i> Live Attendance</a>
+
+                <div class="nav-group">STUDENTS</div>
+                <a href="#"><i class="fa-solid fa-users"></i> All Students</a>
+                <a href="#"><i class="fa-solid fa-user-plus"></i> Add Student</a>
+                <a href="#"><i class="fa-solid fa-camera"></i> Face Capture</a>
+
+                <div class="nav-group">REPORTS</div>
+                <a href="#"><i class="fa-solid fa-file-lines"></i> Attendance Records</a>
+                <a href="#"><i class="fa-solid fa-chart-line"></i> Reports</a>
+                <a href="#"><i class="fa-solid fa-file-export"></i> Export Data</a>
+
+                <div class="nav-group">SYSTEM</div>
+                <a href="#"><i class="fa-solid fa-bell"></i> Notifications <span class="dot"></span></a>
+                <a href="#" class="active"><i class="fa-solid fa-gear"></i> Settings</a>
+                <a href="#"><i class="fa-solid fa-user-shield"></i> Admin Users</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar">A</div>
+                <div class="user-info">
+                    <strong>Admin User</strong>
+                    <span>Super Admin</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <div class="header-title">
+                    <h1>Settings</h1>
+                    <p>Configure system preferences and account settings</p>
+                </div>
+                <button class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Save All Changes</button>
+            </header>
+
+            <div class="settings-layout">
+                <!-- Inner Sidebar -->
+                <div class="inner-tabs">
+                    <button class="tab active"><i class="fa-solid fa-video"></i> Camera & System</button>
+                    <button class="tab"><i class="fa-solid fa-user"></i> Account</button>
+                    <button class="tab"><i class="fa-solid fa-database"></i> Backup & Data</button>
+                </div>
+
+                <!-- Settings Box -->
+                <div class="settings-card">
+                    <h3><i class="fa-solid fa-video"></i> Camera & System Settings</h3>
+                    <hr>
+                    
+                    <div class="form-group">
+                        <label>Primary Camera</label>
+                        <select>
+                            <option>Default Webcam (Built-in)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resolution</label>
+                        <select>
+                            <option>1920x1080 (Full HD)</option>
+                        </select>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <strong>Auto-start Camera on Login</strong>
+                            <p>Start camera when system loads</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <strong>Show Detection Overlay</strong>
+                            <p>Display bounding boxes on feed</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <strong>Save Unknown Face Snapshots</strong>
+                            <p>Store unrecognized face images</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
