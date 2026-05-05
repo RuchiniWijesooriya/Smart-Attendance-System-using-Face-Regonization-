@@ -1,1 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Profile — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .profile-header { display:flex;align-items:center;gap:28px;padding:28px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:24px; }
+    .profile-avatar-wrap { position:relative; }
+    .profile-avatar-wrap .edit-btn { position:absolute;bottom:0;right:0;width:28px;height:28px;border-radius:50%;background:var(--primary);border:none;color:white;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center; }
+    .profile-meta h1 { font-size:26px;font-weight:800;margin-bottom:6px; }
+    .profile-meta p { color:var(--text-2);font-size:14px;margin-bottom:12px; }
+    .profile-badges { display:flex;gap:8px;flex-wrap:wrap; }
+    .profile-actions { margin-left:auto;display:flex;gap:10px;align-items:flex-start; }
+    .info-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:0; }
+    .info-row { display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border); }
+    .info-row:last-child { border-bottom:none; }
+    .info-label { font-size:13px;color:var(--text-2); }
+    .info-val { font-size:14px;font-weight:500; }
+    .att-hist-row { display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px; }
+    .att-hist-row:last-child { border-bottom:none; }
+    .donut { position:relative;width:120px;height:120px;margin:16px auto; }
+    .donut svg { transform:rotate(-90deg); }
+    .donut-label { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+    .donut-label .val { font-size:24px;font-weight:800; }
+    .donut-label .lbl { font-size:11px;color:var(--text-2); }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item active" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Student Profile</h1><p>Detailed view of student information and attendance</p></div>
+      <div class="topbar-actions">
+        <a href="students.html" class="btn btn-ghost">← Back to Students</a>
+        <a href="add-student.html" class="btn btn-ghost">✏️ Edit</a>
+        <button class="btn" style="background:rgba(220,38,38,0.15);color:var(--danger-light);border:none" onclick="deleteStudent()">🗑️ Delete</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar-wrap">
+          <div class="avatar-xl" style="background:linear-gradient(135deg,#2563EB,#8B5CF6)">K</div>
+          <button class="edit-btn" title="Change photo">✏️</button>
+        </div>
+        <div class="profile-meta">
+          <h1>Kavindu Perera</h1>
+          <p>STU001 • Computer Science • Year 3 • CS301</p>
+          <div class="profile-badges">
+            <span class="badge badge-success">✅ Active</span>
+            <span class="badge badge-primary">📷 Face Registered</span>
+            <span class="badge badge-success">92% Attendance</span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <a href="face-capture.html" class="btn btn-ghost btn-sm">📷 Update Face</a>
+          <button class="btn btn-primary btn-sm" onclick="markManual()">📝 Mark Manual</button>
+        </div>
+      </div>
 
+      <div class="grid-2" style="gap:20px">
+        <!-- Personal Info -->
+        <div class="card">
+          <div class="card-header"><h3>👤 Personal Information</h3><button class="btn btn-ghost btn-sm" onclick="editMode()">✏️ Edit</button></div>
+          <div class="card-body">
+            <div class="info-row"><span class="info-label">Student ID</span><span class="info-val">STU001</span></div>
+            <div class="info-row"><span class="info-label">Full Name</span><span class="info-val">Kavindu Perera</span></div>
+            <div class="info-row"><span class="info-label">Date of Birth</span><span class="info-val">2003-05-12</span></div>
+            <div class="info-row"><span class="info-label">Gender</span><span class="info-val">Male</span></div>
+            <div class="info-row"><span class="info-label">Email</span><span class="info-val">kavindu@cs.university.edu</span></div>
+            <div class="info-row"><span class="info-label">Phone</span><span class="info-val">+94 77 123 4567</span></div>
+            <div class="info-row"><span class="info-label">Department</span><span class="info-val">Computer Science</span></div>
+            <div class="info-row"><span class="info-label">Year</span><span class="info-val">Year 3 (Semester 1)</span></div>
+            <div class="info-row"><span class="info-label">Class</span><span class="info-val">CS301</span></div>
+            <div class="info-row"><span class="info-label">Enrolled</span><span class="info-val">2023-09-01</span></div>
+          </div>
+        </div>
+
+        <!-- Attendance Summary -->
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><h3>📊 Attendance Summary</h3><span class="badge badge-success">This Semester</span></div>
+            <div class="card-body">
+              <div class="donut">
+                <svg viewBox="0 0 120 120" width="120" height="120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--success)" stroke-width="12"
+                    stroke-dasharray="314" stroke-dashoffset="25" stroke-linecap="round"/>
+                </svg>
+                <div class="donut-label"><div class="val" style="color:var(--success-light)">92%</div><div class="lbl">Attendance</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
+                <div style="text-align:center;padding:10px;background:rgba(22,163,74,0.08);border-radius:8px">
+                  <div style="font-size:20px;font-weight:800;color:var(--success-light)">46</div>
+                  <div style="font-size:11px;color:var(--text-2)">Present</div>
+                </div>
+                <div style="text-align:center;padding:10px;background:rgba(220,38,38,0.08);border-radius:8px">
+                  <div style="font-size:20px;font-weight:800;color:var(--danger-light)">4</div>
+                  <div style="font-size:11px;color:var(--text-2)">Absent</div>
+                </div>
+                <div style="text-align:center;padding:10px;background:rgba(217,119,6,0.08);border-radius:8px">
+                  <div style="font-size:20px;font-weight:800;color:var(--warning-light)">2</div>
+                  <div style="font-size:11px;color:var(--text-2)">Late</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>🎭 Face Data</h3></div>
+            <div class="card-body">
+              <div class="info-row"><span class="info-label">Status</span><span class="badge badge-success">✅ Registered</span></div>
+              <div class="info-row"><span class="info-label">Samples</span><span class="info-val">3 / 3</span></div>
+              <div class="info-row"><span class="info-label">Avg Confidence</span><span class="info-val">94.2%</span></div>
+              <div class="info-row"><span class="info-label">Registered On</span><span class="info-val">2023-09-05</span></div>
+              <a href="face-capture.html" class="btn btn-ghost btn-sm mt-16">📷 Re-register Face</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance History -->
+      <div class="card mt-24">
+        <div class="card-header"><h3>🗓️ Recent Attendance History</h3><button class="btn btn-ghost btn-sm" onclick="exportHistory()">📤 Export</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Subject</th><th>Time In</th><th>Status</th><th>Confidence</th><th>Method</th></tr></thead>
+            <tbody id="histTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const hist=[
+      {date:'2026-04-27',sub:'CS301',time:'08:42 AM',status:'Present',conf:'96%',method:'Face'},
+      {date:'2026-04-25',sub:'CS301',time:'08:38 AM',status:'Present',conf:'94%',method:'Face'},
+      {date:'2026-04-24',sub:'CS302',time:'—',status:'Absent',conf:'—',method:'—'},
+      {date:'2026-04-23',sub:'CS301',time:'09:05 AM',status:'Late',conf:'91%',method:'Face'},
+      {date:'2026-04-22',sub:'CS303',time:'08:40 AM',status:'Present',conf:'97%',method:'Face'},
+      {date:'2026-04-21',sub:'CS301',time:'08:35 AM',status:'Present',conf:'93%',method:'Face'},
+      {date:'2026-04-20',sub:'CS302',time:'08:45 AM',status:'Present',conf:'95%',method:'Face'},
+      {date:'2026-04-18',sub:'CS303',time:'Manual',status:'Present',conf:'—',method:'Manual'},
+    ];
+    document.getElementById('histTbody').innerHTML=hist.map(h=>`
+      <tr>
+        <td>${h.date}</td><td>${h.sub}</td><td>${h.time}</td>
+        <td><span class="badge ${h.status==='Present'?'badge-success':h.status==='Absent'?'badge-danger':'badge-warning'}">${h.status}</span></td>
+        <td>${h.conf}</td>
+        <td><span class="badge badge-gray">${h.method}</span></td>
+      </tr>`).join('');
+
+    function deleteStudent() { if(confirm('Delete this student?')) window.location.href='students.html'; }
+    function editMode() { window.location.href='add-student.html'; }
+    function markManual() { alert('Manual attendance marked for today.'); }
+    function exportHistory() { alert('Exporting attendance history to CSV...'); }
+  </script>
+</body>
+</html>
