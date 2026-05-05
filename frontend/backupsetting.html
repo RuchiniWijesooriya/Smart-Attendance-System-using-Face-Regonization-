@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceAttend Settings</title>
+    <title>FaceAttend - Settings</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="facesetting.css">
+    <link rel="stylesheet" href="backup.css">
 </head>
 <body>
 
     <div class="container">
-        <!-- Sidebar -->
+        <!-- Sidebar Section -->
         <aside class="sidebar">
             <div class="logo-section">
                 <div class="logo-icon"><i class="fa-solid fa-eye"></i></div>
@@ -50,72 +50,68 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Section -->
         <main class="main-content">
             <header>
                 <div class="header-title">
                     <h1>Settings</h1>
                     <p>Configure system preferences and account settings</p>
                 </div>
-                <button class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Save All Changes</button>
+                <button class="btn-save-all"><i class="fa-solid fa-floppy-disk"></i> Save All Changes</button>
             </header>
 
             <div class="settings-layout">
+                <!-- Inner Tabs Navigation (Links Added Here) -->
                 <div class="inner-tabs">
-                    <button class="tab active"><i class="fa-solid fa-video"></i> Camera & System</button>
-                    <button class="tab"><i class="fa-solid fa-user"></i> Account</button>
-                    <button class="tab"><i class="fa-solid fa-database"></i> Backup & Data</button>
+                    <a href="camera_setting.html" class="tab-btn">
+                        <i class="fa-solid fa-camera"></i> Camera & System
+                    </a>
+                    <a href="account_setting.html" class="tab-btn">
+                        <i class="fa-solid fa-user"></i> Account
+                    </a>
+                    <a href="backupsetting.html" class="tab-btn active">
+                        <i class="fa-solid fa-database"></i> Backup & Data
+                    </a>
                 </div>
 
-                <div class="settings-card">
-                    <h3><i class="fa-solid fa-video" style="color: #333;"></i> Camera & System Settings</h3>
-                    <hr>
-                    
-                    <div class="form-group">
-                        <label>Primary Camera</label>
-                        <select>
-                            <option>Default Webcam (Built-in)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Resolution</label>
-                        <select>
-                            <option>1920×1080 (Full HD)</option>
-                        </select>
-                    </div>
-
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <strong>Auto-start Camera on Login</strong>
-                            <p>Start camera when system loads</p>
+                <!-- Tab Content Area -->
+                <div class="tab-content-wrapper">
+                    <div class="settings-card">
+                        <h3>Backup & Data</h3>
+                        <hr>
+                        
+                        <div class="status-box">
+                            <div class="status-content">
+                                <i class="fa-solid fa-square-check"></i>
+                                <div>
+                                    <strong>Last Backup</strong>
+                                    <p>2026-04-27 at 02:00 AM — 248 students, 1248 records</p>
+                                </div>
+                            </div>
                         </div>
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <strong>Show Detection Overlay</strong>
-                            <p>Display bounding boxes on feed</p>
+                        <div class="form-group">
+                            <label>Auto Backup Frequency</label>
+                            <select>
+                                <option>Daily at 02:00 AM</option>
+                            </select>
                         </div>
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <strong>Save Unknown Face Snapshots</strong>
-                            <p>Store unrecognized face images</p>
+                        <div class="form-group">
+                            <label>Backup Location</label>
+                            <input type="text" value="C:/FaceAttend/Backups/">
                         </div>
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span class="slider"></span>
-                        </label>
+
+                        <div class="form-group">
+                            <label>Data Retention (days)</label>
+                            <input type="text" value="365">
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn-primary">Backup Now</button>
+                            <button class="btn-light">Restore Backup</button>
+                            <button class="btn-light">Export All Data</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,4 +119,4 @@
     </div>
 
 </body>
-</html>  
+</html>

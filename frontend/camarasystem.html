@@ -3,46 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceAttend Settings</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="facesetting.css">
+    <title>FaceAttend - Camera Settings</title>
+    <link rel="stylesheet" href="camara.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
 
-    <div class="container">
+    <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-section">
-                <div class="logo-icon"><i class="fa-solid fa-eye"></i></div>
-                <div>
+                <div class="logo-box">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+                <div class="logo-text">
                     <h2>FaceAttend</h2>
-                    <p>Smart Attendance System</p>
+                    <span>Smart Attendance System</span>
                 </div>
             </div>
 
-            <nav>
-                <div class="nav-group">MAIN</div>
-                <a href="#"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
+            <nav class="nav-menu">
+                <span class="section-title">MAIN</span>
+                <a href="#"><i class="fa-solid fa-chart-column"></i> Dashboard</a>
                 <a href="#"><i class="fa-solid fa-video"></i> Live Attendance</a>
 
-                <div class="nav-group">STUDENTS</div>
+                <span class="section-title">STUDENTS</span>
                 <a href="#"><i class="fa-solid fa-users"></i> All Students</a>
                 <a href="#"><i class="fa-solid fa-user-plus"></i> Add Student</a>
                 <a href="#"><i class="fa-solid fa-camera"></i> Face Capture</a>
 
-                <div class="nav-group">REPORTS</div>
+                <span class="section-title">REPORTS</span>
                 <a href="#"><i class="fa-solid fa-file-lines"></i> Attendance Records</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Reports</a>
                 <a href="#"><i class="fa-solid fa-file-export"></i> Export Data</a>
 
-                <div class="nav-group">SYSTEM</div>
+                <span class="section-title">SYSTEM</span>
                 <a href="#"><i class="fa-solid fa-bell"></i> Notifications <span class="dot"></span></a>
                 <a href="#" class="active"><i class="fa-solid fa-gear"></i> Settings</a>
                 <a href="#"><i class="fa-solid fa-user-shield"></i> Admin Users</a>
             </nav>
 
             <div class="user-profile">
-                <div class="avatar">A</div>
+                <div class="user-avatar">A</div>
                 <div class="user-info">
                     <strong>Admin User</strong>
                     <span>Super Admin</span>
@@ -52,8 +55,8 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <header>
-                <div class="header-title">
+            <header class="page-header">
+                <div class="header-titles">
                     <h1>Settings</h1>
                     <p>Configure system preferences and account settings</p>
                 </div>
@@ -61,15 +64,24 @@
             </header>
 
             <div class="settings-layout">
-                <div class="inner-tabs">
-                    <button class="tab active"><i class="fa-solid fa-video"></i> Camera & System</button>
-                    <button class="tab"><i class="fa-solid fa-user"></i> Account</button>
-                    <button class="tab"><i class="fa-solid fa-database"></i> Backup & Data</button>
+                
+                <div class="settings-tabs">
+                    <a href="camera_setting.html" class="tab-link active">
+                        <i class="fa-solid fa-camera"></i> Camera & System
+                    </a>
+                    <a href="account_setting.html" class="tab-link">
+                        <i class="fa-solid fa-user"></i> Account
+                    </a>
+                    <a href="backupsetting.html" class="tab-link">
+                        <i class="fa-solid fa-database"></i> Backup & Data
+                    </a>
                 </div>
 
+                <!-- Settings Card -->
                 <div class="settings-card">
-                    <h3><i class="fa-solid fa-video" style="color: #333;"></i> Camera & System Settings</h3>
-                    <hr>
+                    <div class="card-title">
+                        <i class="fa-solid fa-camera"></i> Camera & System Settings
+                    </div>
                     
                     <div class="form-group">
                         <label>Primary Camera</label>
@@ -81,14 +93,14 @@
                     <div class="form-group">
                         <label>Resolution</label>
                         <select>
-                            <option>1920×1080 (Full HD)</option>
+                            <option>1920x1080 (Full HD)</option>
                         </select>
                     </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
+                    <div class="toggle-group">
+                        <div class="toggle-text">
                             <strong>Auto-start Camera on Login</strong>
-                            <p>Start camera when system loads</p>
+                            <span>Start camera when system loads</span>
                         </div>
                         <label class="switch">
                             <input type="checkbox">
@@ -96,10 +108,10 @@
                         </label>
                     </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
+                    <div class="toggle-group">
+                        <div class="toggle-text">
                             <strong>Show Detection Overlay</strong>
-                            <p>Display bounding boxes on feed</p>
+                            <span>Display bounding boxes on feed</span>
                         </div>
                         <label class="switch">
                             <input type="checkbox" checked>
@@ -107,10 +119,10 @@
                         </label>
                     </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
+                    <div class="toggle-group">
+                        <div class="toggle-text">
                             <strong>Save Unknown Face Snapshots</strong>
-                            <p>Store unrecognized face images</p>
+                            <span>Store unrecognized face images</span>
                         </div>
                         <label class="switch">
                             <input type="checkbox" checked>
@@ -123,4 +135,4 @@
     </div>
 
 </body>
-</html>  
+</html>

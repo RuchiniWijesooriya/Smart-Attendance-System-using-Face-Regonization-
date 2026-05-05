@@ -1,0 +1,307 @@
+/* --- Global Styles --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-blue: #3b82f6;
+    --sidebar-bg: #ffffff;
+    --main-bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: var(--main-bg);
+    color: var(--text-main);
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar Styling --- */
+.sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    position: fixed; 
+    height: 100vh;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 35px;
+    padding-left: 8px;
+}
+
+.logo-icon {
+    background: #4f46e5;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.logo-section h2 { margin: 0; font-size: 16px; font-weight: 700; }
+.logo-section p { margin: 0; font-size: 11px; color: var(--text-muted); }
+
+.nav-group {
+    font-size: 11px;
+    font-weight: 700;
+    color: #cbd5e1;
+    margin: 24px 0 10px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+}
+
+nav a i { margin-right: 12px; width: 20px; text-align: center; font-size: 15px; }
+
+nav a.active {
+    background: #eff6ff;
+    color: var(--primary-blue);
+}
+
+nav a:hover:not(.active) {
+    background: #f1f5f9;
+}
+
+.user-profile {
+    margin-top: auto;
+    background: #f1f5f9;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    background: #4f46e5;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* --- Main Content Styling --- */
+.main-content {
+    flex: 1;
+    margin-left: 260px; 
+    padding: 40px 50px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+header h1 { margin: 0; font-size: 24px; font-weight: 700; }
+header p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
+
+.btn-save-all {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}
+
+/* --- Inner Tabs Navigation (The Buttons you asked) --- */
+.settings-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.inner-tabs {
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.tab-btn {
+    background: white;
+    border: 1px solid #f1f5f9;
+    padding: 15px 20px;
+    border-radius: 12px;
+    text-decoration: none; 
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.tab-btn i {
+    font-size: 16px;
+    color: var(--text-muted);
+}
+
+/* Active Button Style */
+.tab-btn.active {
+    background: #eff6ff;
+    color: var(--primary-blue);
+    border: 1px solid #dbeafe;
+    font-weight: 600;
+}
+
+.tab-btn.active i {
+    color: var(--primary-blue);
+}
+
+.tab-btn:hover:not(.active) {
+    background: #f8fafc;
+    transform: translateX(5px); 
+}
+
+/* --- Content Area --- */
+.tab-content-wrapper {
+    flex: 1;
+}
+
+.settings-card {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #f1f5f9;
+}
+
+.settings-card h3 { 
+    margin: 0 0 20px 0; 
+    font-size: 18px; 
+    font-weight: 700; 
+}
+
+hr { border: 0; border-top: 1px solid #f1f5f9; margin-bottom: 30px; }
+
+/* --- Backup Status Box --- */
+.status-box {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.status-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-content i {
+    color: #22c55e;
+    font-size: 22px;
+}
+
+.status-content strong {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.status-content p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* --- Form Elements --- */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    background: #fcfcfd;
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text-main);
+    outline: none;
+    box-sizing: border-box; 
+}
+
+input:focus { border-color: var(--primary-blue); }
+
+/* --- Footer Buttons --- */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-light {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid var(--border);
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
