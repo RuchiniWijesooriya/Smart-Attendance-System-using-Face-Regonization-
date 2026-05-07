@@ -1,1 +1,199 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Export Data — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .export-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;transition:all 0.2s;text-align:center; }
+    .export-card:hover { border-color:var(--primary);box-shadow:var(--shadow-glow);transform:translateY(-2px); }
+    .export-card .ec-icon { font-size:40px;margin-bottom:12px; }
+    .export-card h3 { font-size:16px;font-weight:700;margin-bottom:6px; }
+    .export-card p { font-size:13px;color:var(--text-2); }
+    .export-card .ec-badge { margin-top:12px;display:inline-block; }
+    .history-item { display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border); }
+    .history-item:last-child { border-bottom:none; }
+    .hi-icon { width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0; }
+    .hi-info h4 { font-size:14px;font-weight:600; }
+    .hi-info p { font-size:12px;color:var(--text-2);margin-top:2px; }
+    .hi-size { font-size:12px;color:var(--text-3);margin-left:auto; }
+    .preview-table { border-radius:10px;overflow:hidden;border:1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item active" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Export Data</h1><p>Download attendance data in various formats</p></div>
+    </div>
+    <div class="page-body">
+      <!-- Quick Export -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+        <div class="export-card" onclick="quickExport('CSV')">
+          <div class="ec-icon">📊</div>
+          <h3>CSV Export</h3>
+          <p>Spreadsheet-compatible format for Excel / Google Sheets</p>
+          <span class="badge badge-success ec-badge">.csv</span>
+        </div>
+        <div class="export-card" onclick="quickExport('PDF')">
+          <div class="ec-icon">📄</div>
+          <h3>PDF Report</h3>
+          <p>Formatted printable report with charts and tables</p>
+          <span class="badge badge-danger ec-badge">.pdf</span>
+        </div>
+        <div class="export-card" onclick="quickExport('Excel')">
+          <div class="ec-icon">📋</div>
+          <h3>Excel Export</h3>
+          <p>Multi-sheet workbook with charts and formatting</p>
+          <span class="badge badge-primary ec-badge">.xlsx</span>
+        </div>
+      </div>
+
+      <div class="grid-2" style="gap:20px;align-items:start;">
+        <!-- Custom Export Config -->
+        <div class="card">
+          <div class="card-header"><h3>⚙️ Custom Export</h3></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Export Type</label>
+              <select class="form-input" id="expType" onchange="updatePreview()">
+                <option>Attendance Records</option>
+                <option>Student List</option>
+                <option>Attendance Summary Report</option>
+                <option>Monthly Report</option>
+                <option>Absent Students Report</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Format</label>
+              <div style="display:flex;gap:8px;">
+                <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                  <input type="radio" name="fmt" value="csv" checked style="accent-color:var(--primary)"/> CSV
+                </label>
+                <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                  <input type="radio" name="fmt" value="pdf" style="accent-color:var(--primary)"/> PDF
+                </label>
+                <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;">
+                  <input type="radio" name="fmt" value="xlsx" style="accent-color:var(--primary)"/> Excel
+                </label>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label class="form-label">From Date</label><input class="form-input" type="date" value="2026-04-01"/></div>
+              <div class="form-group"><label class="form-label">To Date</label><input class="form-input" type="date" value="2026-04-27"/></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Filter by Department</label>
+              <select class="form-input"><option value="">All Departments</option><option>Computer Science</option><option>Engineering</option><option>Business</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Filter by Subject</label>
+              <select class="form-input"><option value="">All Subjects</option><option>CS301</option><option>CS302</option><option>CS303</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Include Columns</label>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--primary)"/> Student ID & Name</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--primary)"/> Date & Time</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--primary)"/> Attendance Status</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--primary)"/> Subject / Class</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"/> Recognition Confidence</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" style="accent-color:var(--primary)"/> Department</label>
+              </div>
+            </div>
+            <button class="btn btn-primary w-full" style="justify-content:center;padding:14px;font-size:15px;margin-top:8px" onclick="doExport()">
+              ⬇️ Export Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview + History -->
+        <div>
+          <!-- Preview -->
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><h3>👁️ Data Preview</h3><span class="badge badge-gray" id="previewCount">5 rows shown</span></div>
+            <div class="preview-table">
+              <table>
+                <thead><tr><th>Student ID</th><th>Name</th><th>Date</th><th>Status</th><th>Subject</th></tr></thead>
+                <tbody>
+                  <tr><td>STU001</td><td>Kavindu Perera</td><td>2026-04-27</td><td><span class="badge badge-success">Present</span></td><td>CS301</td></tr>
+                  <tr><td>STU002</td><td>Sameera Silva</td><td>2026-04-27</td><td><span class="badge badge-success">Present</span></td><td>CS301</td></tr>
+                  <tr><td>STU003</td><td>Ruchini Fernando</td><td>2026-04-27</td><td><span class="badge badge-warning">Late</span></td><td>CS301</td></tr>
+                  <tr><td>STU004</td><td>Tharushi Mendis</td><td>2026-04-27</td><td><span class="badge badge-danger">Absent</span></td><td>CS301</td></tr>
+                  <tr><td>STU005</td><td>Dinesh Rathnayake</td><td>2026-04-27</td><td><span class="badge badge-success">Present</span></td><td>CS302</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="padding:12px 16px;font-size:12px;color:var(--text-3);">Total records: 1,248</div>
+          </div>
+
+          <!-- Download History -->
+          <div class="card">
+            <div class="card-header"><h3>🕐 Export History</h3></div>
+            <div class="card-body">
+              <div class="history-item">
+                <div class="hi-icon" style="background:rgba(22,163,74,0.15)">📊</div>
+                <div class="hi-info"><h4>attendance_april_2026.csv</h4><p>Attendance Records • 2026-04-26 14:30</p></div>
+                <div class="hi-size">48 KB</div>
+                <button class="btn btn-ghost btn-sm" onclick="redownload()">⬇️</button>
+              </div>
+              <div class="history-item">
+                <div class="hi-icon" style="background:rgba(220,38,38,0.15)">📄</div>
+                <div class="hi-info"><h4>monthly_report_april.pdf</h4><p>Monthly Report • 2026-04-25 09:00</p></div>
+                <div class="hi-size">1.2 MB</div>
+                <button class="btn btn-ghost btn-sm" onclick="redownload()">⬇️</button>
+              </div>
+              <div class="history-item">
+                <div class="hi-icon" style="background:rgba(37,99,235,0.15)">📋</div>
+                <div class="hi-info"><h4>students_list_complete.xlsx</h4><p>Student List • 2026-04-20 11:15</p></div>
+                <div class="hi-size">96 KB</div>
+                <button class="btn btn-ghost btn-sm" onclick="redownload()">⬇️</button>
+              </div>
+              <div class="history-item">
+                <div class="hi-icon" style="background:rgba(22,163,74,0.15)">📊</div>
+                <div class="hi-info"><h4>attendance_week4.csv</h4><p>Weekly Report • 2026-04-15 16:00</p></div>
+                <div class="hi-size">22 KB</div>
+                <button class="btn btn-ghost btn-sm" onclick="redownload()">⬇️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function quickExport(fmt){
+      const name=`attendance_${new Date().toISOString().split('T')[0]}.${fmt.toLowerCase()==='excel'?'xlsx':fmt.toLowerCase()}`;
+      alert(`✅ Exporting as ${fmt}...\nFile: ${name}\n\nDownload started!`);
+    }
+    function doExport(){
+      const type=document.getElementById('expType').value;
+      const fmt=document.querySelector('input[name=fmt]:checked').value;
+      alert(`✅ Export started!\nType: ${type}\nFormat: ${fmt.toUpperCase()}\n\nFile will download shortly.`);
+    }
+    function redownload(){alert('Re-downloading file...');}
+    function updatePreview(){}
+  </script>
+</body>
+</html>
