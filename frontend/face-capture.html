@@ -1,1 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Face Capture — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .capture-layout { display:grid;grid-template-columns:1fr 340px;gap:24px; }
+    .camera-box {
+      background:#000;border-radius:var(--radius);overflow:hidden;
+      aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center;
+    }
+    .camera-overlay {
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    }
+    .face-frame {
+      width:220px;height:260px;border-radius:50%;
+      border:3px solid var(--primary);position:relative;
+      box-shadow:0 0 0 4px var(--primary-glow),0 0 40px rgba(37,99,235,0.3);
+      animation:pulse-border 2s ease-in-out infinite;
+    }
+    @keyframes pulse-border {0%,100%{box-shadow:0 0 0 4px rgba(37,99,235,0.3),0 0 40px rgba(37,99,235,0.2)} 50%{box-shadow:0 0 0 8px rgba(37,99,235,0.1),0 0 60px rgba(37,99,235,0.4)}}
+    .scan-line {
+      position:absolute;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--primary),transparent);
+      animation:scan 2s linear infinite;
+    }
+    @keyframes scan { 0%{top:0} 100%{top:100%} }
+    .camera-placeholder {
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    }
+    .camera-placeholder .ph-icon { font-size:64px;opacity:0.3; }
+    .camera-placeholder p { color:var(--text-3);font-size:14px; }
+    .detection-bar {
+      position:absolute;bottom:0;left:0;right:0;
+      background:linear-gradient(transparent,rgba(0,0,0,0.8));
+      padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+    }
+    .detection-status { display:flex;align-items:center;gap:8px;font-size:13px; }
+    .status-dot { width:8px;height:8px;border-radius:50%; animation:blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .captures-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+    .capture-slot {
+      aspect-ratio:1;border-radius:12px;border:2px dashed var(--border);
+      display:flex;align-items:center;justify-content:center;
+      font-size:24px;color:var(--text-3);position:relative;overflow:hidden;
+      transition:all 0.2s; background:rgba(0,0,0,0.03);
+    }
+    .capture-slot.done { border-color:var(--success);border-style:solid; }
+    .capture-slot.done::after { content:'✓';position:absolute;bottom:4px;right:6px;font-size:14px;color:var(--success-light);font-weight:700; }
+    .progress-ring { position:relative;width:80px;height:80px;margin:0 auto; }
+    .progress-ring svg { transform:rotate(-90deg); }
+    .progress-ring .ring-bg { fill:none;stroke:rgba(0,0,0,0.08);stroke-width:6; }
+    .progress-ring .ring-fill { fill:none;stroke:var(--primary);stroke-width:6;stroke-linecap:round;
+      stroke-dasharray:226;stroke-dashoffset:226;transition:stroke-dashoffset 0.5s ease; }
+    .ring-label { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-size:20px;font-weight:800; }
+    .tip-box { background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);
+      border-radius:10px;padding:14px;font-size:13px;color:var(--text-2);line-height:1.6; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item active" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Face Capture & Registration</h1><p>Capture student's face data for recognition system</p></div>
+      <div class="topbar-actions">
+        <a href="students.html" class="btn btn-ghost">← Back</a>
+      </div>
+    </div>
+    <div class="page-body">
+      <!-- Student selector -->
+      <div class="card mb-20" style="margin-bottom:20px">
+        <div class="card-body" style="padding:16px 24px;">
+          <div class="flex-center gap-16">
+            <div class="form-group" style="margin:0;flex:1">
+              <label class="form-label" style="margin-bottom:6px">Student</label>
+              <select class="form-input" id="studentSelect">
+                <option value="">Select a student to register...</option>
+                <option>STU004 — Tharushi Mendis (Pending)</option>
+                <option>STU008 — Nimal Bandara (Pending)</option>
+                <option>STU010 — Lasith Malinga (Pending)</option>
+              </select>
+            </div>
+            <button class="btn btn-ghost" onclick="startCamera()" style="margin-top:20px;">🎥 Start Camera</button>
+          </div>
+        </div>
+      </div>
 
+      <div class="capture-layout">
+        <!-- Camera -->
+        <div>
+          <div class="camera-box" id="cameraBox">
+            <video id="videoFeed" style="display:none;width:100%;height:100%;object-fit:cover;"></video>
+            <div class="camera-overlay" id="camOverlay">
+              <div class="face-frame"><div class="scan-line"></div></div>
+            </div>
+            <div id="camPlaceholder" class="camera-placeholder">
+              <div class="ph-icon">📷</div>
+              <p>Camera not started</p>
+              <p style="font-size:12px">Click "Start Camera" above</p>
+            </div>
+            <div class="detection-bar">
+              <div class="detection-status" id="detStatus">
+                <div class="status-dot" style="background:var(--warning)"></div>
+                <span id="detText">Waiting for camera...</span>
+              </div>
+              <span style="font-size:12px;color:var(--text-3)" id="fps">0 FPS</span>
+            </div>
+          </div>
+          <div class="flex-center gap-12 mt-16" style="justify-content:center;">
+            <button class="btn btn-ghost" onclick="startCamera()" id="btnStart">🎥 Start Camera</button>
+            <button class="btn btn-primary" onclick="captureFrame()" id="btnCapture" disabled style="padding:12px 28px;font-size:16px;">
+              📸 Capture
+            </button>
+            <button class="btn btn-ghost" onclick="retake()" id="btnRetake" disabled>🔄 Retake Last</button>
+          </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div>
+          <div class="card mb-20" style="margin-bottom:16px;">
+            <div class="card-header"><h3>📸 Captured Samples</h3><span id="captureCount" class="badge badge-warning">0 / 3</span></div>
+            <div class="card-body">
+              <div class="captures-grid" id="capturesGrid">
+                <div class="capture-slot" id="slot0">1</div>
+                <div class="capture-slot" id="slot1">2</div>
+                <div class="capture-slot" id="slot2">3</div>
+              </div>
+              <div class="progress-ring mt-16">
+                <svg viewBox="0 0 80 80" width="80" height="80">
+                  <circle class="ring-bg" cx="40" cy="40" r="36"/>
+                  <circle class="ring-fill" id="ringFill" cx="40" cy="40" r="36"/>
+                </svg>
+                <div class="ring-label" id="ringLabel">0%</div>
+              </div>
+              <p style="text-align:center;font-size:13px;color:var(--text-2);margin-top:8px">Capture 3 photos from different angles</p>
+            </div>
+          </div>
+          <div class="card mb-20" style="margin-bottom:16px;">
+            <div class="card-body">
+              <div class="tip-box">
+                💡 <strong>Tips for better recognition:</strong><br/>
+                • Look directly at the camera<br/>
+                • Ensure good lighting<br/>
+                • Capture from slightly different angles<br/>
+                • Remove glasses if possible<br/>
+                • Keep a neutral expression
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-success w-full" id="btnSave" disabled onclick="saveRegistration()" style="padding:14px;justify-content:center;font-size:15px;">
+            💾 Save Face Registration
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let capturesDone = 0; let stream = null; let fpsInterval;
+
+    function startCamera() {
+      navigator.mediaDevices.getUserMedia({video:true}).then(s => {
+        stream = s;
+        const v = document.getElementById('videoFeed');
+        v.srcObject = s; v.play();
+        v.style.display='block';
+        document.getElementById('camPlaceholder').style.display='none';
+        document.getElementById('camOverlay').style.display='flex';
+        document.getElementById('btnCapture').disabled = false;
+        document.getElementById('detText').textContent = '🟢 Face detected';
+        document.getElementById('detStatus').querySelector('.status-dot').style.background='var(--success)';
+        let f=0; fpsInterval=setInterval(()=>{document.getElementById('fps').textContent=(24+Math.round(Math.random()*6))+' FPS'; },1000);
+      }).catch(()=>{
+        document.getElementById('detText').textContent='Camera access denied — using simulation';
+        simulateCamera();
+      });
+    }
+
+    function simulateCamera() {
+      document.getElementById('camPlaceholder').style.display='none';
+      document.getElementById('camOverlay').style.display='flex';
+      document.getElementById('cameraBox').style.background='linear-gradient(135deg,#dbeafe,#ede9fe)';
+      document.getElementById('btnCapture').disabled=false;
+      document.getElementById('detText').textContent='🟢 Face detected (simulated)';
+      document.getElementById('detStatus').querySelector('.status-dot').style.background='var(--success)';
+    }
+
+    function captureFrame() {
+      if(capturesDone>=3) return;
+      const slot = document.getElementById('slot'+capturesDone);
+      slot.innerHTML='✅'; slot.classList.add('done');
+      slot.style.background='rgba(22,163,74,0.08)';
+      capturesDone++;
+      updateProgress();
+    }
+
+    function retake() {
+      if(capturesDone===0) return;
+      capturesDone--;
+      const slot = document.getElementById('slot'+capturesDone);
+      slot.innerHTML=(capturesDone+1)+''; slot.classList.remove('done');
+      slot.style.background='rgba(0,0,0,0.03)';
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = (capturesDone/3)*100;
+      document.getElementById('ringFill').style.strokeDashoffset = 226 - (226*pct/100);
+      document.getElementById('ringLabel').textContent = Math.round(pct)+'%';
+      document.getElementById('captureCount').textContent = capturesDone+' / 3';
+      document.getElementById('captureCount').className = 'badge '+(capturesDone===3?'badge-success':'badge-warning');
+      document.getElementById('btnRetake').disabled = capturesDone===0;
+      document.getElementById('btnSave').disabled = capturesDone<3;
+    }
+
+    function saveRegistration() {
+      alert('✅ Face data saved successfully for student!');
+      window.location.href='students.html';
+    }
+  </script>
+</body>
+</html>
