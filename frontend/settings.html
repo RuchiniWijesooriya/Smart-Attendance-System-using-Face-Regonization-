@@ -1,1 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceAttend - Complete Settings</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+    <style>
+        :root {
+            --primary: #4361ee;
+            --bg: #f8fafc;
+            --sidebar-text: #64748b;
+            --sidebar-active-bg: #eff6ff;
+            --border: #e2e8f0;
+            --text-dark: #1e293b;
+            --input-bg: #f8fafc;
+            --notification-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); display: flex; min-height: 100vh; color: var(--text-dark); }
+
+        /* --- SIDEBAR (image_0e446d.png අනුව) --- */
+        .sidebar {
+            width: 260px; background: white; border-right: 1px solid var(--border);
+            padding: 24px; position: fixed; height: 100vh; display: flex; flex-direction: column;
+            z-index: 100;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+        .logo-icon { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .brand-text { font-size: 16px; font-weight: 700; display: block; }
+        .brand-sub { font-size: 10px; color: #94a3b8; }
+
+        .nav-label { font-size: 11px; font-weight: 700; color: #cbd5e1; margin: 20px 0 10px 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .nav-item { 
+            display: flex; align-items: center; gap: 12px; padding: 12px 15px; 
+            text-decoration: none; color: var(--sidebar-text); font-size: 14px; 
+            font-weight: 500; border-radius: 10px; margin-bottom: 4px; transition: 0.2s;
+            position: relative;
+        }
+        .nav-item i { width: 18px; text-align: center; font-size: 16px; }
+        .nav-item:hover, .nav-item.active { background: var(--sidebar-active-bg); color: var(--primary); }
+
+        /* Notification Dot */
+        .nav-item.has-notif::after {
+            content: ''; position: absolute; right: 15px; top: 18px;
+            width: 6px; height: 6px; background: var(--notification-red); border-radius: 50%;
+        }
+
+        .user-footer { margin-top: auto; background: #f1f5f9; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 35px; height: 35px; background: var(--primary); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+        /* --- MAIN CONTENT --- */
+        .main { margin-left: 260px; flex: 1; padding: 40px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .save-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+        .settings-grid { display: flex; gap: 30px; }
+
+        /* Tabs Menu */
+        .tab-menu { width: 230px; display: flex; flex-direction: column; gap: 12px; }
+        .tab-btn { 
+            background: white; border: 1px solid var(--border); padding: 15px; 
+            border-radius: 12px; display: flex; align-items: center; gap: 12px; 
+            cursor: pointer; color: var(--sidebar-text); font-weight: 600; transition: 0.3s;
+            text-align: left;
+        }
+        .tab-btn.active { color: var(--primary); border-color: var(--primary); background: var(--sidebar-active-bg); }
+
+        /* Content Cards */
+        .content-card { flex: 1; background: white; border-radius: 16px; padding: 35px; border: 1px solid var(--border); display: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .content-card.active { display: block; }
+        
+        .card-title { font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; font-size: 16px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #475569; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--input-bg); outline: none; font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        /* Toggle Switches */
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-top: 1px solid #f1f5f9; }
+        .toggle-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+        .toggle-text p { font-size: 12px; color: #94a3b8; }
+
+        .switch { position: relative; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .update-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-eye"></i></div>
+            <div class="logo-text">
+                <span class="brand-text">FaceAttend</span>
+                <span class="brand-sub">Smart Attendance System</span>
+            </div>
+        </div>
+        <nav>
+            <div class="nav-label">Main</div>
+            <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-video"></i> Live Attendance</a>
+
+            <div class="nav-label">Students</div>
+            <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> All Students</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-user-plus"></i> Add Student</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-camera"></i> Face Capture</a>
+
+            <div class="nav-label">Reports</div>
+            <a href="#" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Attendance Records</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Reports</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-file-export"></i> Export Data</a>
+
+            <div class="nav-label">System</div>
+            <a href="#" class="nav-item has-notif"><i class="fa-solid fa-bell"></i> Notifications</a>
+            <a href="#" class="nav-item active"><i class="fa-solid fa-gear"></i> Settings</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-user-shield"></i> Admin Users</a>
+        </nav>
+        <div class="user-footer">
+            <div class="avatar">A</div>
+            <div><strong style="font-size:13px;">Admin User</strong><p style="font-size:11px; color:#64748b;">Super Admin</p></div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header>
+            <div>
+                <h2>Settings</h2>
+                <p style="font-size:14px; color:#64748b;">Configure system preferences and account settings</p>
+            </div>
+            <button class="save-btn"><i class="fa-solid fa-floppy-disk"></i> Save All Changes</button>
+        </header>
+
+        <div class="settings-grid">
+            <div class="tab-menu">
+                <button class="tab-btn active" onclick="showTab('camera', this)"><i class="fa-solid fa-camera"></i> Camera & System</button>
+                <button class="tab-btn" onclick="showTab('account', this)"><i class="fa-solid fa-user"></i> Account</button>
+                <button class="tab-btn" onclick="showTab('backup', this)"><i class="fa-solid fa-database"></i> Backup & Data</button>
+            </div>
+
+            <div id="camera" class="content-card active">
+                <div class="card-title"><i class="fa-solid fa-camera"></i> Camera & System Settings</div>
+                <div class="form-group">
+                    <label>Primary Camera</label>
+                    <select><option>Default Webcam (Built-in)</option></select>
+                </div>
+                <div class="form-group">
+                    <label>Resolution</label>
+                    <select><option>1920x1080 (Full HD)</option></select>
+                </div>
+                <div class="toggle-row">
+                    <div class="toggle-text"><strong>Auto-start Camera on Login</strong><p>Start camera when system loads</p></div>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <div class="toggle-text"><strong>Show Detection Overlay</strong><p>Display bounding boxes on feed</p></div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <div class="toggle-text"><strong>Save Unknown Face Snapshots</strong><p>Store unrecognized face images</p></div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div id="account" class="content-card">
+                <div class="card-title"><i class="fa-solid fa-user"></i> Account Setting</div>
+                <div class="form-group">
+                    <label>Admin User</label>
+                    <p style="font-size: 14px; margin-bottom: 10px;">admin@gmail.com</p>
+                    <button style="background:none; border:1px solid var(--border); padding:8px 12px; border-radius:6px; cursor:pointer; font-size:12px;">Change Photo</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>First Name</label><input type="text" value="Admin"></div>
+                    <div class="form-group"><label>Last Name</label><input type="text" value="User"></div>
+                </div>
+                <div class="form-group"><label>Email Address</label><input type="email" value="admin@gmail.com"></div>
+                <div class="form-group"><label>Phone</label><input type="text" value="+94 71 333 0001"></div>
+                
+                <h4 style="margin: 20px 0 15px; font-size: 15px;">Change Password</h4>
+                <div class="form-group"><label>Current Password</label><input type="password" placeholder="••••••••"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>New Password</label><input type="password" placeholder="••••••••"></div>
+                    <div class="form-group"><label>Confirm Password</label><input type="password" placeholder="••••••••"></div>
+                </div>
+                <button class="update-btn">Update Account</button>
+            </div>
+
+            <div id="backup" class="content-card">
+                <div class="card-title"><i class="fa-solid fa-database"></i> Backup & Data</div>
+                <div class="form-group">
+                    <label>Automatic Backup</label>
+                    <select><option>Daily</option><option>Weekly</option></select>
+                </div>
+                <div class="toggle-row">
+                    <div class="toggle-text"><strong>Cloud Backup</strong><p>Sync data with secure cloud storage</p></div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <button class="update-btn"><i class="fa-solid fa-download"></i> Download Full Backup (.SQL)</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(id, btn) {
+            document.querySelectorAll('.content-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
