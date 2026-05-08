@@ -1,1 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Attendance — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .live-layout { display:grid;grid-template-columns:1fr 360px;gap:24px; }
+    .live-camera {
+      background:#000;border-radius:var(--radius);overflow:hidden;
+      aspect-ratio:16/9;position:relative;display:flex;align-items:center;justify-content:center;
+    }
+    .live-placeholder { display:flex;flex-direction:column;align-items:center;gap:16px; }
+    .live-placeholder .ph { font-size:72px;opacity:0.2; }
+    .recognition-boxes { position:absolute;inset:0; }
+    .rec-box {
+      position:absolute;border:3px solid;border-radius:8px;
+      animation:appear 0.3s ease;
+    }
+    @keyframes appear { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:none} }
+    .rec-label {
+      position:absolute;bottom:-30px;left:-3px;right:-3px;
+      padding:4px 8px;font-size:12px;font-weight:700;text-align:center;border-radius:0 0 6px 6px;
+    }
+    .live-topbar {
+      position:absolute;top:0;left:0;right:0;
+      background:linear-gradient(rgba(0,0,0,0.7),transparent);
+      padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+    }
+    .live-info { display:flex;gap:16px;align-items:center; }
+    .live-badge { padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700; }
+    .live-bottom {
+      position:absolute;bottom:0;left:0;right:0;
+      background:linear-gradient(transparent,rgba(0,0,0,0.8));
+      padding:20px;display:flex;align-items:center;justify-content:space-between;
+    }
+    .ticker {
+      display:flex;gap:24px;font-size:13px;
+    }
+    .ticker-item .lbl { color:var(--text-3);font-size:11px; }
+    .ticker-item .val { font-size:18px;font-weight:800;margin-top:2px; }
+    .log-item {
+      display:flex;align-items:center;gap:10px;padding:10px 0;
+      border-bottom:1px solid var(--border);animation:slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
+    .log-item:last-child { border-bottom:none; }
+    .log-info h4 { font-size:13px;font-weight:600; }
+    .log-info p { font-size:11px;color:var(--text-2); }
+    .log-time { font-size:11px;color:var(--text-3);margin-left:auto;white-space:nowrap; }
+    .session-info .si-row { display:flex;justify-content:space-between;align-items:center;
+      padding:8px 0;border-bottom:1px solid var(--border);font-size:13px; }
+    .session-info .si-row:last-child { border-bottom:none; }
+    .session-info .si-label { color:var(--text-2); }
+    .session-info .si-val { font-weight:600; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item active" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
 
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Live Attendance</h1><p id="clock">Loading...</p></div>
+      <div class="topbar-actions">
+        <button class="btn btn-success" id="btnStart" onclick="startSession()">▶ Start Session</button>
+        <button class="btn btn-danger" id="btnStop" onclick="stopSession()" style="display:none">⏹ Stop Session</button>
+        <a href="records.html" class="btn btn-ghost">📋 View Records</a>
+      </div>
+    </div>
+    <div class="page-body">
+      <!-- Session Config -->
+      <div class="card mb-20" style="margin-bottom:20px;display:flex;gap:16px;align-items:flex-end;padding:16px 24px;" id="sessionConfig">
+        <div class="form-group" style="margin:0;flex:1"><label class="form-label">Subject / Class</label><select class="form-input"><option>CS301 — Data Structures</option><option>CS302 — Algorithms</option><option>CS303 — OS</option></select></div>
+        <div class="form-group" style="margin:0;flex:1"><label class="form-label">Department</label><select class="form-input"><option>Computer Science</option><option>Engineering</option></select></div>
+        <div class="form-group" style="margin:0;flex:1"><label class="form-label">Camera</label><select class="form-input"><option>Default Webcam</option><option>IP Camera 1</option></select></div>
+        <div class="form-group" style="margin:0;width:180px"><label class="form-label">Confidence Threshold</label><input class="form-input" type="number" value="85" min="50" max="99"/></div>
+      </div>
+
+      <div class="live-layout">
+        <!-- Camera Feed -->
+        <div>
+          <div class="live-camera" id="liveCamera">
+            <video id="videoFeed" style="display:none;width:100%;height:100%;object-fit:cover;"></video>
+            <div class="recognition-boxes" id="recBoxes"></div>
+            <div class="live-placeholder" id="livePlaceholder">
+              <div class="ph">🎥</div>
+              <p style="color:var(--text-3)">Press Start Session to begin</p>
+            </div>
+            <div class="live-topbar" id="liveTopbar" style="display:none;">
+              <div class="live-info">
+                <div class="live-badge" style="background:var(--danger);color:white;animation:blink2 1s step-end infinite">🔴 LIVE</div>
+                <span style="font-size:13px;color:rgba(255,255,255,0.8)">CS301 — Data Structures</span>
+              </div>
+              <div class="live-info">
+                <span class="live-badge" style="background:rgba(0,0,0,0.5);color:white" id="fpsDisplay">0 FPS</span>
+                <span class="live-badge" style="background:rgba(37,99,235,0.6);color:white" id="confDisplay">Conf: 85%</span>
+              </div>
+            </div>
+            <div class="live-bottom" id="liveBottom" style="display:none;">
+              <div class="ticker">
+                <div class="ticker-item"><div class="lbl">Present</div><div class="val" style="color:var(--success-light)" id="cntPresent">0</div></div>
+                <div class="ticker-item"><div class="lbl">Absent</div><div class="val" style="color:var(--danger-light)" id="cntAbsent">0</div></div>
+                <div class="ticker-item"><div class="lbl">Unknown</div><div class="val" style="color:var(--warning-light)" id="cntUnknown">0</div></div>
+                <div class="ticker-item"><div class="lbl">Accuracy</div><div class="val" id="accuracy">—</div></div>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)" id="sessionTime">00:00</div>
+            </div>
+          </div>
+          <style>@keyframes blink2{0%,100%{opacity:1}50%{opacity:0.4}}</style>
+        </div>
+
+        <!-- Right Panel -->
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><h3>📋 Session Info</h3></div>
+            <div class="card-body session-info">
+              <div class="si-row"><span class="si-label">Subject</span><span class="si-val">CS301</span></div>
+              <div class="si-row"><span class="si-label">Date</span><span class="si-val">2026-04-27</span></div>
+              <div class="si-row"><span class="si-label">Start Time</span><span class="si-val" id="startTimeDisp">—</span></div>
+              <div class="si-row"><span class="si-label">Total Students</span><span class="si-val">42</span></div>
+              <div class="si-row"><span class="si-label">Session Status</span><span class="si-val" id="sesStatus"><span class="badge badge-gray">Idle</span></span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>🕐 Recognition Log</h3><span class="badge badge-primary" id="logCount">0</span></div>
+            <div style="padding:0 24px;max-height:380px;overflow-y:auto;" id="logArea">
+              <div style="text-align:center;padding:32px;color:var(--text-3);font-size:13px;">
+                🎥 Start a session to see recognition results
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let sessionActive=false; let sessionTimer=null; let sessionSec=0;
+    let logEntries=[]; let present=0; let unknown=0;
+
+    const names=['Kavindu Perera','Sameera Silva','Dinesh Rathnayake','Ashini Jayawardena','Ruchini Fernando'];
+    const colors=['#2563EB','#8B5CF6','#16A34A','#0EA5E9','#D97706'];
+
+    setInterval(()=>{
+      const n=new Date();
+      document.getElementById('clock').textContent=n.toLocaleTimeString('en-US',{weekday:'long',hour:'2-digit',minute:'2-digit'});
+    },1000);
+
+    function startSession() {
+      sessionActive=true;
+      document.getElementById('btnStart').style.display='none';
+      document.getElementById('btnStop').style.display='flex';
+      document.getElementById('sessionConfig').style.opacity='0.5';
+      document.getElementById('sessionConfig').style.pointerEvents='none';
+      document.getElementById('livePlaceholder').style.display='none';
+      document.getElementById('liveTopbar').style.display='flex';
+      document.getElementById('liveBottom').style.display='flex';
+      document.getElementById('liveCamera').style.background='linear-gradient(135deg,#060b18,#0d1a2e)';
+      document.getElementById('sesStatus').innerHTML='<span class="badge badge-success">🟢 Active</span>';
+      document.getElementById('startTimeDisp').textContent=new Date().toLocaleTimeString();
+      present=0; unknown=0; sessionSec=0; logEntries=[];
+
+      sessionTimer = setInterval(()=>{
+        sessionSec++;
+        const m=String(Math.floor(sessionSec/60)).padStart(2,'0');
+        const s=String(sessionSec%60).padStart(2,'0');
+        document.getElementById('sessionTime').textContent=m+':'+s;
+        document.getElementById('fpsDisplay').textContent=(26+Math.round(Math.random()*4))+' FPS';
+        if(sessionSec%4===0) simulateRecognition();
+      },1000);
+
+      // Draw fake face boxes
+      simulateFaceBoxes();
+    }
+
+    function simulateFaceBoxes() {
+      const boxArea=document.getElementById('recBoxes');
+      boxArea.innerHTML='';
+      [{top:15,left:20,w:22},{top:20,left:55,w:18},{top:12,left:72,w:20}].forEach((b,i)=>{
+        const d=document.createElement('div');
+        d.className='rec-box';
+        d.style.cssText=`top:${b.top}%;left:${b.left}%;width:${b.w}%;padding-bottom:${b.w*1.2}%;border-color:${i===0?'var(--success)':'var(--primary)'};`;
+        const lbl=document.createElement('div');
+        lbl.className='rec-label';
+        lbl.style.cssText=`background:${i===0?'var(--success)':'var(--primary)'};color:white;`;
+        lbl.textContent=i===0?'Kavindu P. ✓':i===1?'Sameera S. ✓':'Dinesh R. ✓';
+        d.appendChild(lbl); boxArea.appendChild(d);
+      });
+    }
+
+    function simulateRecognition() {
+      const isKnown=Math.random()>0.2;
+      const name=isKnown?names[Math.floor(Math.random()*names.length)]:'Unknown Person';
+      const conf=isKnown?(85+Math.round(Math.random()*14)):45+Math.round(Math.random()*15);
+      if(isKnown) present++; else unknown++;
+      document.getElementById('cntPresent').textContent=present;
+      document.getElementById('cntUnknown').textContent=unknown;
+      document.getElementById('cntAbsent').textContent=Math.max(0,42-present);
+      document.getElementById('accuracy').textContent=Math.round(present/(present+unknown)*100)+'%';
+
+      const entry=document.createElement('div');
+      entry.className='log-item';
+      entry.innerHTML=`
+        <div class="avatar" style="width:30px;height:30px;font-size:12px;background:${isKnown?colors[Math.floor(Math.random()*colors.length)]:'var(--danger)'};flex-shrink:0;">${name[0]}</div>
+        <div class="log-info">
+          <h4>${name}</h4>
+          <p>${isKnown?`✅ Recognized (${conf}% conf)`:'❌ Unknown face'}</p>
+        </div>
+        <div class="log-time">${new Date().toLocaleTimeString()}</div>`;
+
+      const area=document.getElementById('logArea');
+      if(area.querySelector('div[style]')) area.innerHTML='';
+      area.insertBefore(entry,area.firstChild);
+      if(area.children.length>20) area.removeChild(area.lastChild);
+      logEntries.push({name,conf,known:isKnown});
+      document.getElementById('logCount').textContent=logEntries.length;
+    }
+
+    function stopSession() {
+      sessionActive=false;
+      clearInterval(sessionTimer);
+      document.getElementById('btnStop').style.display='none';
+      document.getElementById('btnStart').style.display='flex';
+      document.getElementById('sesStatus').innerHTML='<span class="badge badge-gray">Completed</span>';
+      document.getElementById('recBoxes').innerHTML='';
+      alert(`✅ Session ended!\nTotal recognized: ${present}\nUnknown: ${unknown}\nAccuracy: ${Math.round(present/(present+unknown+0.01)*100)}%\n\nAttendance saved to records.`);
+    }
+  </script>
+</body>
+</html>

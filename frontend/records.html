@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance Records — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item active" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Attendance Records</h1><p>View and manage all attendance records</p></div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="exportCSV()">📤 Export CSV</button>
+        <button class="btn btn-primary" onclick="exportPDF()">📄 Export PDF</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value" style="color:var(--primary-light)">1,248</div><div class="stat-label">Total Records</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" style="color:var(--success-light)">986</div><div class="stat-label">Present</div></div>
+        <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-value" style="color:var(--danger-light)">215</div><div class="stat-label">Absent</div></div>
+        <div class="stat-card"><div class="stat-icon">⏰</div><div class="stat-value" style="color:var(--warning-light)">47</div><div class="stat-label">Late</div></div>
+      </div>
 
+      <div class="card">
+        <div class="card-header" style="flex-wrap:wrap;gap:12px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;flex:1;">
+            <div class="search-bar" style="min-width:200px;flex:1;">
+              <span class="search-icon">🔍</span>
+              <input class="form-input" placeholder="Search name or ID..." oninput="filterRec()" id="recSearch" style="padding-left:42px"/>
+            </div>
+            <input class="form-input" type="date" id="dateFrom" style="width:150px" onchange="filterRec()" value="2026-04-01"/>
+            <input class="form-input" type="date" id="dateTo" style="width:150px" onchange="filterRec()" value="2026-04-27"/>
+            <select class="form-input" style="width:140px" onchange="filterRec()" id="statusFilter">
+              <option value="">All Status</option><option>Present</option><option>Absent</option><option>Late</option>
+            </select>
+            <select class="form-input" style="width:150px" onchange="filterRec()" id="subjectFilter">
+              <option value="">All Subjects</option><option>CS301</option><option>CS302</option><option>CS303</option>
+            </select>
+          </div>
+          <span id="recCount" style="font-size:13px;color:var(--text-2);align-self:center">All records</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" style="accent-color:var(--primary)" onclick="toggleAll(this)"/></th>
+                <th>Student</th><th>Subject</th><th>Date</th><th>Time In</th>
+                <th>Status</th><th>Confidence</th><th>Method</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recTbody"></tbody>
+          </table>
+        </div>
+        <div style="padding:16px 24px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:13px;color:var(--text-2)">Showing 1–15 of 1,248 records</span>
+          <div style="display:flex;gap:6px;">
+            <button style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,0.04);color:var(--text-2);cursor:pointer;">‹</button>
+            <button style="width:36px;height:36px;border-radius:8px;background:var(--primary);border:none;color:white;cursor:pointer;font-weight:700;">1</button>
+            <button style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,0.04);color:var(--text-2);cursor:pointer;">2</button>
+            <button style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,0.04);color:var(--text-2);cursor:pointer;">3</button>
+            <button style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,0.04);color:var(--text-2);cursor:pointer;">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const records=[
+      {id:'STU001',name:'Kavindu Perera',sub:'CS301',date:'2026-04-27',time:'08:42 AM',status:'Present',conf:'96%',method:'Face'},
+      {id:'STU002',name:'Sameera Silva',sub:'CS301',date:'2026-04-27',time:'08:44 AM',status:'Present',conf:'93%',method:'Face'},
+      {id:'STU003',name:'Ruchini Fernando',sub:'CS301',date:'2026-04-27',time:'09:05 AM',status:'Late',conf:'89%',method:'Face'},
+      {id:'STU004',name:'Tharushi Mendis',sub:'CS301',date:'2026-04-27',time:'—',status:'Absent',conf:'—',method:'—'},
+      {id:'STU005',name:'Dinesh Rathnayake',sub:'CS302',date:'2026-04-27',time:'09:01 AM',status:'Present',conf:'95%',method:'Face'},
+      {id:'STU006',name:'Ashini Jayawardena',sub:'CS302',date:'2026-04-27',time:'09:03 AM',status:'Present',conf:'97%',method:'Face'},
+      {id:'STU007',name:'Savindu Kumara',sub:'CS302',date:'2026-04-27',time:'09:12 AM',status:'Late',conf:'88%',method:'Face'},
+      {id:'STU008',name:'Nimal Bandara',sub:'CS303',date:'2026-04-26',time:'—',status:'Absent',conf:'—',method:'—'},
+      {id:'STU009',name:'Chamari Perera',sub:'CS303',date:'2026-04-26',time:'08:38 AM',status:'Present',conf:'98%',method:'Face'},
+      {id:'STU010',name:'Lasith Malinga',sub:'CS303',date:'2026-04-26',time:'Manual',status:'Present',conf:'—',method:'Manual'},
+      {id:'STU001',name:'Kavindu Perera',sub:'CS302',date:'2026-04-25',time:'08:40 AM',status:'Present',conf:'94%',method:'Face'},
+      {id:'STU002',name:'Sameera Silva',sub:'CS303',date:'2026-04-25',time:'08:36 AM',status:'Present',conf:'92%',method:'Face'},
+      {id:'STU005',name:'Dinesh Rathnayake',sub:'CS301',date:'2026-04-25',time:'—',status:'Absent',conf:'—',method:'—'},
+      {id:'STU006',name:'Ashini Jayawardena',sub:'CS301',date:'2026-04-24',time:'08:41 AM',status:'Present',conf:'96%',method:'Face'},
+      {id:'STU003',name:'Ruchini Fernando',sub:'CS302',date:'2026-04-24',time:'09:10 AM',status:'Late',conf:'87%',method:'Face'},
+    ];
+    const colors={STU001:'#2563EB',STU002:'#8B5CF6',STU003:'#D97706',STU004:'#DC2626',STU005:'#16A34A',STU006:'#0EA5E9',STU007:'#F43F5E',STU008:'#64748B',STU009:'#10B981',STU010:'#F59E0B'};
+
+    function renderRec(data){
+      document.getElementById('recTbody').innerHTML=data.map(r=>`
+        <tr>
+          <td><input type="checkbox" style="accent-color:var(--primary)"/></td>
+          <td><div class="flex-center gap-10">
+            <div class="avatar" style="width:30px;height:30px;font-size:12px;background:linear-gradient(135deg,${colors[r.id]||'#444'},${colors[r.id]||'#888'}88)">${r.name[0]}</div>
+            <div><div style="font-weight:600;font-size:13px">${r.name}</div><div style="font-size:11px;color:var(--text-2)">${r.id}</div></div>
+          </div></td>
+          <td><span class="badge badge-primary">${r.sub}</span></td>
+          <td>${r.date}</td><td>${r.time}</td>
+          <td><span class="badge ${r.status==='Present'?'badge-success':r.status==='Absent'?'badge-danger':'badge-warning'}">${r.status}</span></td>
+          <td style="font-size:13px">${r.conf}</td>
+          <td><span class="badge badge-gray">${r.method}</span></td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-ghost btn-sm" onclick="editRecord(this)">✏️</button>
+              <button class="btn btn-sm" style="background:rgba(220,38,38,0.1);color:var(--danger-light);border:none" onclick="delRecord(this)">🗑️</button>
+            </div>
+          </td>
+        </tr>`).join('');
+      document.getElementById('recCount').textContent=data.length+' records';
+    }
+    function filterRec(){
+      const q=document.getElementById('recSearch').value.toLowerCase();
+      const st=document.getElementById('statusFilter').value;
+      const sb=document.getElementById('subjectFilter').value;
+      renderRec(records.filter(r=>
+        (!q||r.name.toLowerCase().includes(q)||r.id.toLowerCase().includes(q))&&
+        (!st||r.status===st)&&(!sb||r.sub===sb)));
+    }
+    function toggleAll(cb){document.querySelectorAll('#recTbody input[type=checkbox]').forEach(c=>c.checked=cb.checked);}
+    function editRecord(btn){alert('Edit attendance record...');}
+    function delRecord(btn){if(confirm('Delete this record?'))btn.closest('tr').remove();}
+    function exportCSV(){alert('Exporting to CSV...');}
+    function exportPDF(){alert('Generating PDF report...');}
+    renderRec(records);
+  </script>
+</body>
+</html>

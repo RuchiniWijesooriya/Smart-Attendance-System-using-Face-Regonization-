@@ -1,1 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Management — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .role-badge-super { background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#FCD34D;border:1px solid rgba(251,191,36,0.2); }
+    .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:100%;max-width:480px;animation:slideUp 0.2s ease; }
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    .modal-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; }
+    .modal-header h3 { font-size:18px;font-weight:700; }
+    .close-btn { background:none;border:none;color:var(--text-3);font-size:22px;cursor:pointer; }
+    .permission-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+    .perm-item { display:flex;align-items:center;gap:8px;padding:8px;border-radius:6px;background:rgba(0,0,0,0.03);font-size:13px;cursor:pointer; }
+    .perm-item input { accent-color:var(--primary); }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item active" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Admin User Management</h1><p>Manage system users, roles, and permissions</p></div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openModal()">➕ Add Admin User</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">🛡️</div><div class="stat-value" style="color:#FCD34D">1</div><div class="stat-label">Super Admins</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-value" style="color:var(--primary-light)">3</div><div class="stat-label">Admins</div></div>
+        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-value" style="color:var(--success-light)">4</div><div class="stat-label">Teachers</div></div>
+        <div class="stat-card"><div class="stat-icon">👁️</div><div class="stat-value" style="color:var(--text-2)">2</div><div class="stat-label">Viewers</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="search-bar" style="width:280px">
+            <span class="search-icon">🔍</span>
+            <input class="form-input" placeholder="Search users..." oninput="filterAdmins()" id="adminSearch" style="padding-left:42px"/>
+          </div>
+          <div class="flex-center gap-8">
+            <select class="form-input" style="width:140px" onchange="filterAdmins()" id="roleFilter">
+              <option value="">All Roles</option>
+              <option>Super Admin</option><option>Admin</option><option>Teacher</option><option>Viewer</option>
+            </select>
+            <select class="form-input" style="width:130px" onchange="filterAdmins()" id="activeFilter">
+              <option value="">All Status</option><option>Active</option><option>Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>User</th><th>Email</th><th>Role</th>
+                <th>Last Login</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Admin Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOuter(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>➕ Add Admin User</h3>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="mName" placeholder="Full name"/></div>
+      <div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" type="email" id="mEmail" placeholder="user@faceattend.com"/></div>
+      <div class="form-group">
+        <label class="form-label">Role *</label>
+        <select class="form-input" id="mRole">
+          <option>Admin</option><option>Teacher</option><option>Viewer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Permissions</label>
+        <div class="permission-grid">
+          <label class="perm-item"><input type="checkbox" checked/> View Dashboard</label>
+          <label class="perm-item"><input type="checkbox" checked/> View Records</label>
+          <label class="perm-item"><input type="checkbox"/> Manage Students</label>
+          <label class="perm-item"><input type="checkbox"/> Start Attendance</label>
+          <label class="perm-item"><input type="checkbox"/> Export Data</label>
+          <label class="perm-item"><input type="checkbox"/> System Settings</label>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Temporary Password *</label><input class="form-input" type="password" id="mPwd" placeholder="Set initial password"/></div>
+      <div class="flex-center gap-10 mt-16" style="margin-top:16px;justify-content:flex-end;">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addAdmin()">✅ Add User</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const adminColors = {'Super Admin':'linear-gradient(135deg,#F59E0B,#FCD34D)','Admin':'linear-gradient(135deg,#2563EB,#3B82F6)','Teacher':'linear-gradient(135deg,#16A34A,#22C55E)','Viewer':'linear-gradient(135deg,#64748B,#94A3B8)'};
+    let admins=[
+      {name:'Admin User',email:'admin@faceattend.com',role:'Super Admin',login:'2026-04-27 08:30',status:'Active',initials:'A'},
+      {name:'Dr. Nimal Perera',email:'nimal@university.edu',role:'Admin',login:'2026-04-26 09:15',status:'Active',initials:'N'},
+      {name:'Dr. Sujatha Fernando',email:'sujatha@university.edu',role:'Admin',login:'2026-04-25 10:00',status:'Active',initials:'S'},
+      {name:'Mr. Aruna Silva',email:'aruna@university.edu',role:'Admin',login:'2026-04-24 11:30',status:'Inactive',initials:'A'},
+      {name:'Ms. Dilini Perera',email:'dilini@university.edu',role:'Teacher',login:'2026-04-27 07:55',status:'Active',initials:'D'},
+      {name:'Mr. Kasun Jayasuriya',email:'kasun@university.edu',role:'Teacher',login:'2026-04-26 08:20',status:'Active',initials:'K'},
+      {name:'Ms. Piyumi Rathnayake',email:'piyumi@university.edu',role:'Teacher',login:'2026-04-27 09:00',status:'Active',initials:'P'},
+      {name:'Mr. Eranga Bandara',email:'eranga@university.edu',role:'Teacher',login:'2026-04-22 14:00',status:'Active',initials:'E'},
+      {name:'Ms. Shalini Madusha',email:'shalini@university.edu',role:'Viewer',login:'2026-04-15 10:30',status:'Active',initials:'S'},
+      {name:'Mr. Tharindu Kumara',email:'tharindu@university.edu',role:'Viewer',login:'2026-04-10 09:45',status:'Inactive',initials:'T'},
+    ];
+
+    function renderAdmins(data){
+      document.getElementById('adminTbody').innerHTML=data.map((a,i)=>`
+        <tr>
+          <td style="color:var(--text-3)">${i+1}</td>
+          <td><div class="flex-center gap-12">
+            <div class="avatar" style="background:${adminColors[a.role]}">${a.initials}</div>
+            <div><div style="font-weight:600">${a.name}</div><div style="font-size:11px;color:var(--text-2)">ID: USR${String(i+1).padStart(3,'0')}</div></div>
+          </div></td>
+          <td style="font-size:13px;color:var(--text-2)">${a.email}</td>
+          <td><span class="badge ${a.role==='Super Admin'?'role-badge-super':a.role==='Admin'?'badge-primary':a.role==='Teacher'?'badge-success':'badge-gray'}">${a.role}</span></td>
+          <td style="font-size:13px;color:var(--text-2)">${a.login}</td>
+          <td>
+            <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+              <div style="position:relative;width:36px;height:20px;">
+                <input type="checkbox" ${a.status==='Active'?'checked':''} onchange="toggleStatus(${i})" style="display:none;" id="ts${i}"/>
+                <div onclick="document.getElementById('ts${i}').click();toggleStatus(${i})" style="width:36px;height:20px;background:${a.status==='Active'?'var(--success)':'rgba(0,0,0,0.1)'};border-radius:10px;transition:background 0.2s;position:relative;cursor:pointer;">
+                  <div style="position:absolute;top:2px;${a.status==='Active'?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:white;transition:all 0.2s;" id="tdot${i}"></div>
+                </div>
+              </div>
+              <span style="font-size:12px;color:${a.status==='Active'?'var(--success-light)':'var(--text-3)'}">${a.status}</span>
+            </label>
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-ghost btn-sm" onclick="editAdmin(${i})" title="Edit">✏️</button>
+              <button class="btn btn-ghost btn-sm" onclick="resetPw(${i})" title="Reset password">🔒</button>
+              <button class="btn btn-sm" style="background:rgba(220,38,38,0.1);color:var(--danger-light);border:none" onclick="deleteAdmin(${i})" title="Delete" ${a.role==='Super Admin'?'disabled':''}>🗑️</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    function filterAdmins(){
+      const q=document.getElementById('adminSearch').value.toLowerCase();
+      const role=document.getElementById('roleFilter').value;
+      const status=document.getElementById('activeFilter').value;
+      renderAdmins(admins.filter(a=>
+        (!q||a.name.toLowerCase().includes(q)||a.email.toLowerCase().includes(q))&&
+        (!role||a.role===role)&&(!status||a.status===status)));
+    }
+
+    function toggleStatus(i){admins[i].status=admins[i].status==='Active'?'Inactive':'Active';renderAdmins(admins);}
+    function editAdmin(i){alert('Edit user: '+admins[i].name);}
+    function resetPw(i){if(confirm('Reset password for '+admins[i].name+'?'))alert('Password reset email sent!');}
+    function deleteAdmin(i){if(confirm('Delete user: '+admins[i].name+'?')){admins.splice(i,1);renderAdmins(admins);}}
+    function openModal(){document.getElementById('modalOverlay').classList.add('open');}
+    function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+    function closeModalOuter(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+    function addAdmin(){
+      const n=document.getElementById('mName').value;
+      const e=document.getElementById('mEmail').value;
+      const r=document.getElementById('mRole').value;
+      if(!n||!e){alert('Please fill required fields.');return;}
+      admins.push({name:n,email:e,role:r,login:'Never',status:'Active',initials:n[0].toUpperCase()});
+      renderAdmins(admins);closeModal();
+      alert('✅ Admin user added successfully!\nActivation email sent to: '+e);
+    }
+    renderAdmins(admins);
+  </script>
+</body>
+</html>
 
