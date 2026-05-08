@@ -1,1 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .settings-tabs { display:flex;flex-direction:column;gap:4px; }
+    .stab { display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--radius-sm);
+      color:var(--text-2);cursor:pointer;font-size:14px;font-weight:500;transition:all 0.2s;border:none;background:transparent;font-family:'Inter',sans-serif;width:100%;text-align:left; }
+    .stab:hover { background:rgba(37,99,235,0.06);color:var(--text); }
+    .stab.active { background:var(--primary-glow);color:var(--primary); }
+    .settings-toggle { display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border); }
+    .settings-toggle:last-child { border-bottom:none; }
+    .toggle-switch { position:relative;cursor:pointer; }
+    .toggle-switch input { display:none; }
+    .toggle-track { width:44px;height:24px;background:rgba(0,0,0,0.12);border-radius:12px;transition:background 0.2s;position:relative;display:block; }
+    .toggle-track::after { content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.2s; }
+    .toggle-switch input:checked + .toggle-track { background:var(--primary); }
+    .toggle-switch input:checked + .toggle-track::after { transform:translateX(20px); }
+    .settings-panel { display:none; }
+    .settings-panel.active { display:block; }
+    .slider-wrap { display:flex;align-items:center;gap:14px; }
+    .range-slider { -webkit-appearance:none;flex:1;height:6px;border-radius:3px;background:rgba(0,0,0,0.1);outline:none;cursor:pointer; }
+    .range-slider::-webkit-slider-thumb { -webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary);cursor:pointer;box-shadow:0 0 8px var(--primary-glow); }
+    .range-val { width:40px;text-align:center;font-weight:700;color:var(--primary-light); }
+    .danger-zone { background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.2);border-radius:var(--radius);padding:20px; }
+    .danger-action { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(220,38,38,0.1); }
+    .danger-action:last-child { border-bottom:none; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item active" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Settings</h1><p>Configure system preferences and account settings</p></div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="saveAll()">💾 Save All Changes</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div style="display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;">
+        <!-- Settings Nav -->
+        <div class="card">
+          <div class="card-body" style="padding:12px;">
+            <div class="settings-tabs">
+              <button class="stab active" onclick="showPanel('camera',this)">🎥 Camera & System</button>
+              <button class="stab" onclick="showPanel('recognition',this)">🤖 Face Recognition</button>
+              <button class="stab" onclick="showPanel('account',this)">👤 Account</button>
+              <button class="stab" onclick="showPanel('appearance',this)">🎨 Appearance</button>
+              <button class="stab" onclick="showPanel('backup',this)">💾 Backup & Data</button>
+              <button class="stab" onclick="showPanel('danger',this)" style="color:var(--danger-light)">⚠️ Danger Zone</button>
+            </div>
+          </div>
+        </div>
 
+        <!-- Settings Panels -->
+        <div>
+          <!-- Camera -->
+          <div class="settings-panel active card" id="panel-camera">
+            <div class="card-header"><h3>🎥 Camera & System Settings</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Primary Camera</label>
+                <select class="form-input">
+                  <option>Default Webcam (Built-in)</option>
+                  <option>External USB Camera</option>
+                  <option>IP Camera — 192.168.1.100</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Resolution</label>
+                <select class="form-input"><option>1920×1080 (Full HD)</option><option>1280×720 (HD)</option><option>640×480 (SD)</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Frame Rate</label>
+                <div class="slider-wrap">
+                  <input type="range" class="range-slider" min="10" max="60" value="30" oninput="document.getElementById('fpsVal').textContent=this.value"/>
+                  <div class="range-val" id="fpsVal">30</div>
+                  <span style="font-size:12px;color:var(--text-3)">FPS</span>
+                </div>
+              </div>
+              <div class="settings-toggle">
+                <div><div style="font-size:14px;font-weight:600">Auto-start Camera on Login</div><div style="font-size:12px;color:var(--text-2)">Start camera when system loads</div></div>
+                <label class="toggle-switch"><input type="checkbox"/><div class="toggle-track"></div></label>
+              </div>
+              <div class="settings-toggle">
+                <div><div style="font-size:14px;font-weight:600">Show Detection Overlay</div><div style="font-size:12px;color:var(--text-2)">Display bounding boxes on feed</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+              </div>
+              <div class="settings-toggle">
+                <div><div style="font-size:14px;font-weight:600">Save Unknown Face Snapshots</div><div style="font-size:12px;color:var(--text-2)">Store unrecognized face images</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recognition -->
+          <div class="settings-panel card" id="panel-recognition">
+            <div class="card-header"><h3>🤖 Face Recognition Settings</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Recognition Model</label>
+                <select class="form-input"><option>DeepFace (Recommended)</option><option>dlib HOG</option><option>FaceNet</option><option>ArcFace</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confidence Threshold (%)</label>
+                <div class="slider-wrap">
+                  <input type="range" class="range-slider" min="50" max="99" value="85" oninput="document.getElementById('confVal').textContent=this.value"/>
+                  <div class="range-val" id="confVal">85</div>
+                  <span style="font-size:12px;color:var(--text-3)">%</span>
+                </div>
+                <p style="font-size:12px;color:var(--text-3);margin-top:6px">Higher = more strict matching (recommended: 80-90%)</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Face Samples Required for Enrollment</label>
+                <div class="slider-wrap">
+                  <input type="range" class="range-slider" min="1" max="10" value="3" oninput="document.getElementById('sampVal').textContent=this.value"/>
+                  <div class="range-val" id="sampVal">3</div>
+                  <span style="font-size:12px;color:var(--text-3)">samples</span>
+                </div>
+              </div>
+              <div class="settings-toggle">
+                <div><div style="font-size:14px;font-weight:600">Anti-Spoofing Detection</div><div style="font-size:12px;color:var(--text-2)">Prevent photo-based fraud</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+              </div>
+              <div class="settings-toggle">
+                <div><div style="font-size:14px;font-weight:600">Multiple Face Detection</div><div style="font-size:12px;color:var(--text-2)">Detect multiple faces simultaneously</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+              </div>
+              <div class="settings-toggle">
+                <div><div style="font-size:14px;font-weight:600">Auto-mark Attendance</div><div style="font-size:12px;color:var(--text-2)">Automatically record on recognition</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <div class="settings-panel card" id="panel-account">
+            <div class="card-header"><h3>👤 Account Settings</h3></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:16px;background:rgba(37,99,235,0.04);border-radius:12px;">
+                <div class="avatar-xl">A</div>
+                <div>
+                  <h3 style="margin-bottom:4px">Admin User</h3>
+                  <p style="color:var(--text-2);font-size:13px">admin@faceattend.com</p>
+                  <span class="badge badge-primary mt-16" style="margin-top:8px">Super Admin</span>
+                </div>
+                <button class="btn btn-ghost btn-sm" style="margin-left:auto">📸 Change Photo</button>
+              </div>
+              <div class="grid-2">
+                <div class="form-group"><label class="form-label">First Name</label><input class="form-input" value="Admin"/></div>
+                <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" value="User"/></div>
+              </div>
+              <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" value="admin@faceattend.com"/></div>
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" value="+94 77 000 0001"/></div>
+              <hr style="border-color:var(--border);margin:20px 0;"/>
+              <h4 style="margin-bottom:16px;font-size:15px">Change Password</h4>
+              <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+              <div class="grid-2">
+                <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+                <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+              </div>
+              <button class="btn btn-primary" onclick="saveAccount()">💾 Update Account</button>
+            </div>
+          </div>
+
+          <!-- Appearance -->
+          <div class="settings-panel card" id="panel-appearance">
+            <div class="card-header"><h3>🎨 Appearance</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Theme</label>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;">
+                  <div onclick="setTheme(this,'light')" style="padding:16px;border-radius:10px;border:2px solid var(--primary);background:#F1F3F5;cursor:pointer;text-align:center">
+                    <div style="font-size:20px">☀️</div><div style="font-size:12px;margin-top:6px;color:var(--text-2)">Light (Current)</div>
+                  </div>
+                  <div onclick="setTheme(this,'dark')" style="padding:16px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.04);cursor:pointer;text-align:center">
+                    <div style="font-size:20px">🌙</div><div style="font-size:12px;margin-top:6px;color:var(--text-2)">Dark</div>
+                  </div>
+                  <div onclick="setTheme(this,'system')" style="padding:16px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.04);cursor:pointer;text-align:center">
+                    <div style="font-size:20px">💻</div><div style="font-size:12px;margin-top:6px;color:var(--text-2)">System</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Accent Color</label>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+                  <div onclick="setAccent('#2563EB')" style="width:36px;height:36px;border-radius:50%;background:#2563EB;cursor:pointer;border:3px solid white;"></div>
+                  <div onclick="setAccent('#8B5CF6')" style="width:36px;height:36px;border-radius:50%;background:#8B5CF6;cursor:pointer;"></div>
+                  <div onclick="setAccent('#10B981')" style="width:36px;height:36px;border-radius:50%;background:#10B981;cursor:pointer;"></div>
+                  <div onclick="setAccent('#F43F5E')" style="width:36px;height:36px;border-radius:50%;background:#F43F5E;cursor:pointer;"></div>
+                  <div onclick="setAccent('#F59E0B')" style="width:36px;height:36px;border-radius:50%;background:#F59E0B;cursor:pointer;"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date Format</label>
+                <select class="form-input"><option>YYYY-MM-DD</option><option>DD/MM/YYYY</option><option>MM/DD/YYYY</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Time Format</label>
+                <select class="form-input"><option>12-hour (AM/PM)</option><option>24-hour</option></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backup -->
+          <div class="settings-panel card" id="panel-backup">
+            <div class="card-header"><h3>💾 Backup & Data</h3></div>
+            <div class="card-body">
+              <div style="padding:16px;background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.2);border-radius:10px;margin-bottom:20px;">
+                <div style="font-size:13px;font-weight:600;color:var(--success-light)">✅ Last Backup</div>
+                <div style="font-size:14px;margin-top:4px">2026-04-27 at 02:00 AM — 248 students, 1248 records</div>
+              </div>
+              <div class="form-group"><label class="form-label">Auto Backup Frequency</label>
+                <select class="form-input"><option>Daily at 02:00 AM</option><option>Weekly</option><option>Monthly</option><option>Manual only</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">Backup Location</label>
+                <input class="form-input" value="C:/FaceAttend/Backups/"/></div>
+              <div class="form-group"><label class="form-label">Data Retention (days)</label>
+                <input class="form-input" type="number" value="365"/></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+                <button class="btn btn-primary" onclick="backup()">💾 Backup Now</button>
+                <button class="btn btn-ghost" onclick="restore()">📂 Restore Backup</button>
+                <button class="btn btn-ghost" onclick="exportAll()">📤 Export All Data</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danger Zone -->
+          <div class="settings-panel" id="panel-danger">
+            <div class="danger-zone">
+              <h3 style="color:var(--danger-light);margin-bottom:4px">⚠️ Danger Zone</h3>
+              <p style="font-size:13px;color:var(--text-2);margin-bottom:20px">These actions are irreversible. Please proceed with caution.</p>
+              <div class="danger-action">
+                <div><div style="font-weight:600">Clear All Face Data</div><div style="font-size:12px;color:var(--text-2)">Remove all registered face encodings. Students must re-enroll.</div></div>
+                <button class="btn btn-sm" style="background:rgba(220,38,38,0.15);color:var(--danger-light);border:1px solid rgba(220,38,38,0.3)" onclick="dangerAction('Clear all face data')">Clear Face Data</button>
+              </div>
+              <div class="danger-action">
+                <div><div style="font-weight:600">Delete All Attendance Records</div><div style="font-size:12px;color:var(--text-2)">Permanently delete all attendance history. This cannot be undone.</div></div>
+                <button class="btn btn-sm" style="background:rgba(220,38,38,0.15);color:var(--danger-light);border:1px solid rgba(220,38,38,0.3)" onclick="dangerAction('Delete all records')">Delete Records</button>
+              </div>
+              <div class="danger-action">
+                <div><div style="font-weight:600">Reset System to Default</div><div style="font-size:12px;color:var(--text-2)">Remove all data and reset to factory settings.</div></div>
+                <button class="btn btn-sm" style="background:var(--danger);color:white;border:none" onclick="dangerAction('FULL SYSTEM RESET')">⚠️ Reset System</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function showPanel(name,el){
+      document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+      document.getElementById('panel-'+name).classList.add('active');
+      el.classList.add('active');
+    }
+    function saveAll(){alert('✅ All settings saved successfully!');}
+    function saveAccount(){alert('✅ Account updated successfully!');}
+    function setTheme(el,t){alert('Theme: '+t);}
+    function setAccent(c){document.documentElement.style.setProperty('--primary',c);alert('Accent color changed!');}
+    function backup(){alert('💾 Backup created at C:/FaceAttend/Backups/');}
+    function restore(){alert('📂 Select backup file to restore...');}
+    function exportAll(){alert('📤 Exporting all data...');}
+    function dangerAction(a){if(confirm('⚠️ Are you sure you want to: '+a+'?\nThis action CANNOT be undone!'))alert('Action performed: '+a);}
+  </script>
+</body>
+</html>

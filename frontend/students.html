@@ -1,1 +1,186 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Students — FaceAttend</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .student-photo { width:36px;height:36px;border-radius:10px;object-fit:cover; }
+    .filter-bar { display:flex;gap:12px;align-items:center;flex-wrap:wrap; }
+    .pagination { display:flex;gap:6px;align-items:center;margin-top:20px; }
+    .page-btn { width:36px;height:36px;border-radius:8px;border:1px solid var(--border);
+      background:rgba(0,0,0,0.04);color:var(--text-2);cursor:pointer;font-size:13px;
+      display:flex;align-items:center;justify-content:center;transition:all 0.2s; }
+    .page-btn.active { background:var(--primary);border-color:var(--primary);color:white; }
+    .page-btn:hover:not(.active) { background:rgba(37,99,235,0.08); }
+    .action-btns { display:flex;gap:6px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-icon">👁️</div><h2>FaceAttend</h2><p>Smart Attendance System</p></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+      <a class="nav-item" href="live-attendance.html"><span class="nav-icon">🎥</span>Live Attendance</a>
+      <div class="nav-section-title">Students</div>
+      <a class="nav-item active" href="students.html"><span class="nav-icon">👥</span>All Students</a>
+      <a class="nav-item" href="add-student.html"><span class="nav-icon">➕</span>Add Student</a>
+      <a class="nav-item" href="face-capture.html"><span class="nav-icon">📷</span>Face Capture</a>
+      <div class="nav-section-title">Reports</div>
+      <a class="nav-item" href="records.html"><span class="nav-icon">📋</span>Attendance Records</a>
+      <a class="nav-item" href="reports.html"><span class="nav-icon">📈</span>Reports</a>
+      <a class="nav-item" href="export.html"><span class="nav-icon">📤</span>Export Data</a>
+      <div class="nav-section-title">System</div>
+      <a class="nav-item notif-dot" href="notifications.html"><span class="nav-icon">🔔</span>Notifications</a>
+      <a class="nav-item" href="settings.html"><span class="nav-icon">⚙️</span>Settings</a>
+      <a class="nav-item" href="admin-management.html"><span class="nav-icon">🛡️</span>Admin Users</a>
+    </nav>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-avatar">A</div><div class="user-info"><h4>Admin User</h4><p>Super Admin</p></div></div></div>
+  </div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><h1>Student Management</h1><p>Manage all enrolled students and their face data</p></div>
+      <div class="topbar-actions">
+        <a href="add-student.html" class="btn btn-primary">➕ Add Student</a>
+      </div>
+    </div>
+    <div class="page-body">
+      <!-- Summary -->
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" style="color:var(--primary-light)">248</div><div class="stat-label">Total Students</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" style="color:var(--success-light)">231</div><div class="stat-label">Face Registered</div></div>
+        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" style="color:var(--warning-light)">17</div><div class="stat-label">Pending Registration</div></div>
+      </div>
+      <!-- Filters -->
+      <div class="card">
+        <div class="card-header">
+          <div class="filter-bar">
+            <div class="search-bar" style="flex:1;min-width:220px;">
+              <span class="search-icon">🔍</span>
+              <input class="form-input" id="searchInput" placeholder="Search by name or student ID..." oninput="filterTable()" style="padding-left:42px"/>
+            </div>
+            <select class="form-input" style="width:160px" onchange="filterTable()" id="deptFilter">
+              <option value="">All Departments</option>
+              <option>Computer Science</option><option>Engineering</option><option>Business</option>
+            </select>
+            <select class="form-input" style="width:140px" onchange="filterTable()" id="statusFilter">
+              <option value="">All Status</option>
+              <option>Active</option><option>Inactive</option>
+            </select>
+            <select class="form-input" style="width:130px" onchange="filterTable()" id="faceFilter">
+              <option value="">Face Status</option>
+              <option>Registered</option><option>Pending</option>
+            </select>
+          </div>
+          <div class="flex-center gap-8">
+            <span id="rowCount" style="font-size:13px;color:var(--text-2)">10 results</span>
+            <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📤 Export</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="studentTable">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" onchange="toggleAll(this)" style="accent-color:var(--primary)"/></th>
+                <th>#</th><th>Student</th><th>Student ID</th>
+                <th>Department</th><th>Attendance %</th><th>Face</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div style="padding:16px 24px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:13px;color:var(--text-2)">Showing 1–10 of 248</span>
+          <div class="pagination">
+            <button class="page-btn">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span style="color:var(--text-3)">...</span>
+            <button class="page-btn">25</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const students = [
+      {id:'STU001',name:'Kavindu Perera',dept:'Computer Science',att:92,face:true,status:'Active',color:'#2563EB'},
+      {id:'STU002',name:'Sameera Silva',dept:'Computer Science',att:85,face:true,status:'Active',color:'#8B5CF6'},
+      {id:'STU003',name:'Ruchini Fernando',dept:'Engineering',att:78,face:true,status:'Active',color:'#D97706'},
+      {id:'STU004',name:'Tharushi Mendis',dept:'Business',att:65,face:false,status:'Active',color:'#DC2626'},
+      {id:'STU005',name:'Dinesh Rathnayake',dept:'Computer Science',att:88,face:true,status:'Active',color:'#16A34A'},
+      {id:'STU006',name:'Ashini Jayawardena',dept:'Engineering',att:91,face:true,status:'Active',color:'#0EA5E9'},
+      {id:'STU007',name:'Savindu Kumara',dept:'Computer Science',att:74,face:true,status:'Active',color:'#F43F5E'},
+      {id:'STU008',name:'Nimal Bandara',dept:'Business',att:55,face:false,status:'Inactive',color:'#64748B'},
+      {id:'STU009',name:'Chamari Perera',dept:'Engineering',att:96,face:true,status:'Active',color:'#10B981'},
+      {id:'STU010',name:'Lasith Malinga',dept:'Computer Science',att:70,face:false,status:'Active',color:'#F59E0B'},
+    ];
+
+    function renderTable(data) {
+      const tb = document.getElementById('tbody');
+      tb.innerHTML = data.map((s,i)=>`
+        <tr>
+          <td><input type="checkbox" style="accent-color:var(--primary)"/></td>
+          <td style="color:var(--text-3)">${i+1}</td>
+          <td>
+            <div class="flex-center gap-12">
+              <div class="avatar" style="background:linear-gradient(135deg,${s.color},${s.color}88)">${s.name[0]}</div>
+              <div><div style="font-weight:600">${s.name}</div><div style="font-size:12px;color:var(--text-2)">${s.id}</div></div>
+            </div>
+          </td>
+          <td>${s.id}</td>
+          <td><span class="badge badge-gray">${s.dept}</span></td>
+          <td>
+            <div class="flex-center gap-8">
+              <div style="flex:1;height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden">
+                <div style="height:100%;width:${s.att}%;background:${s.att>=80?'var(--success)':s.att>=60?'var(--warning)':'var(--danger)'}"></div>
+              </div>
+              <span style="font-size:12px;font-weight:600;color:${s.att>=80?'var(--success-light)':s.att>=60?'var(--warning-light)':'var(--danger-light)'}">${s.att}%</span>
+            </div>
+          </td>
+          <td><span class="badge ${s.face?'badge-success':'badge-warning'}">${s.face?'✅ Registered':'⚠️ Pending'}</span></td>
+          <td><span class="badge ${s.status==='Active'?'badge-success':'badge-gray'}">${s.status}</span></td>
+          <td>
+            <div class="action-btns">
+              <a href="student-profile.html" class="btn btn-ghost btn-sm" title="View">👁️</a>
+              <a href="add-student.html" class="btn btn-ghost btn-sm" title="Edit">✏️</a>
+              <button class="btn btn-sm" style="background:rgba(220,38,38,0.1);color:var(--danger-light);border:none" onclick="deleteRow(this)" title="Delete">🗑️</button>
+            </div>
+          </td>
+        </tr>`).join('');
+      document.getElementById('rowCount').textContent = data.length + ' results';
+    }
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const dept = document.getElementById('deptFilter').value;
+      const status = document.getElementById('statusFilter').value;
+      const face = document.getElementById('faceFilter').value;
+      renderTable(students.filter(s =>
+        (!q || s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q)) &&
+        (!dept || s.dept===dept) &&
+        (!status || s.status===status) &&
+        (!face || (face==='Registered'?s.face:!s.face))
+      ));
+    }
+
+    function toggleAll(cb) {
+      document.querySelectorAll('#tbody input[type=checkbox]').forEach(c=>c.checked=cb.checked);
+    }
+
+    function deleteRow(btn) {
+      if(confirm('Delete this student?')) btn.closest('tr').remove();
+    }
+
+    function exportCSV() { alert('Exporting student data to CSV...'); }
+
+    renderTable(students);
+  </script>
+</body>
+</html>
