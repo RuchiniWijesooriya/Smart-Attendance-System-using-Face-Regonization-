@@ -1,1 +1,11 @@
+# Smart Attendance System - Required Python Packages
+# Install with: pip install -r requirements.txt
+
+# ── Web Framework ──────────────────────────────────────
+Flask
+flask-cors
+
+# ── Face Recognition (OpenCV only — no dlib!) ──────────
+opencv-python
+numpy
 
